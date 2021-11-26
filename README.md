@@ -1,70 +1,78 @@
-# Getting Started with Create React App
+# 2021 CNU SW Engineering
+> **공구궁구 = 공동구매 + 궁동구매**
+> > GongguGunggu is an application that guarantees reliable joint purchases to people living in Gung-dong.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Index
+> <b><a href="#system-architecture">System Architecture</a></b><br>
+> <b><a href="#development-stack">Development Stack</a> </b><br>
+> <b><a href="#frontend">Frontend</a></b>  <br>
+> <b><a href="#backend">Backend</a></b><br>
+> <b><a href="#webpage">Webpage</a></b><br>
+> <b><a href="#contributors">Contributors</a></b><br>
+> <b><a href="#prerequisites">Prerequisites</a></b><br>
 
-## Available Scripts
+## System Architecture
 
-In the project directory, you can run:
 
-### `yarn start`
+<br>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Development Stack
+<p align="center">
+  <img src="https://img.shields.io/badge/React-v17.0.2-blue" />
+  <img src="https://img.shields.io/badge/Firebase-blue" />
+  <img src="https://img.shields.io/badge/VSCode-blue" />
+</p>
+<p align="center" text-align="center" width="100%">
+  <img src="https://img.shields.io/github/contributors/2021-CNU-SW-Engineering-Team-3/gonggugunggu?color=brightgreen" />
+  <img src="https://img.shields.io/github/last-commit/2021-CNU-SW-Engineering-Team-3/gonggugunggu?color=red" />
+  <img src="https://img.shields.io/github/commit-activity/w/2021-CNU-SW-Engineering-Team-3/gonggugunggu?color=red" />
+</p>
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+<br>
 
-### `yarn test`
+## Frontend
+### Structure
+  > [src/~~~](./src/~~~) : Directory for ~~~   
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<div align="right">
+    <b><a href="#2021-cnu-sw-engineering">⬆️ Back to Top</a></b>
+</div>
 
-### `yarn build`
+## Backend
+  > Firebase 간략 소개~~~
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<div align="right">
+    <b><a href="#2021-cnu-sw-engineering">⬆️ Back to Top</a></b>
+</div>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Webpage
+  > 웹페이지 사진
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `yarn eject`
+<div align="right">
+    <b><a href="#2021-cnu-sw-engineering">⬆️ Back to Top</a></b>
+</div>
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Contributors
+| Name | Country | Where to find us | Role |
+| ---- | ------- | ----------------- | ---- |
+| Inhan Kang <br /> <img src="https://avatars.githubusercontent.com/inhan05053" width="100" />  | Republic of Korea | [Github](https://github.com/inhan05053)| 역할 |
+| Byeongmin Jeon <br /> <img src="https://avatars.githubusercontent.com/jeonbyeongmin" width="100" />  | Republic of Korea | [Github](https://github.com/jeonbyeongmin)| Frontend |
+| Geonyeol Ryu <br /> <img src="https://avatars.githubusercontent.com/rjsduf0503" width="100" />  | Republic of Korea | [Github](https://github.com/rjsduf0503)| Frontend |
+| Seunghun Han <br /> <img src="https://avatars.githubusercontent.com/gooriiie" width="100" />  | Republic of Korea | [Github](https://github.com/gooriiie)| 역할 |
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+<div align="right">
+    <b><a href="#2021-cnu-sw-engineering">⬆️ Back to Top</a></b>
+</div>
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Prerequisites
 
-## Learn More
+-   Windows : ~~~
+-   Mac : ~~~
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+-   npm install ~~~~
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<div align="right">
+    <b><a href="#2021-cnu-sw-engineering">⬆️ Back to Top</a></b>
+</div>
