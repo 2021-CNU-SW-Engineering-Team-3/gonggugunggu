@@ -1,6 +1,51 @@
 # 2021 CNU SW Engineering
 > **공구궁구 = 공동구매 + 궁동구매**
-> > GongguGunggu is an application that guarantees reliable joint purchases to people living in Gung-dong.
+> GongguGunggu is an application that guarantees reliable joint purchases to people living in Gung-dong.
+> << 역할 분배 >>
+
+1. 홈
+게시글들이 카드 형태로 뿌려짐
+로그인 상태라면 좌 상단에 글쓰기 버튼
+
+2. 헤더
+로고
+게시글 검색 필드
+로그인 버튼 -- > 로그인시 프로필 이미지로 바뀜
+
+
+3. 프로필 이미지 눌렀을 때 나오는 항목들 ?
+유저 { 내 정보, 참여 공동구매 목록, 자신의 게시글 목록, 거래친구 목록 }
+어드민 { 내정보, 회원 목록, 게시글 목록 }
+
+
+
+# 구현 순서
+1. 회원가입 및 로그인 , 내 정보 -- 전병민
+2. 공동구매 게시글 등록 -- 전병민
+3. 공동구매 참여 -- 전병민
+
+
+4. 자신의 게시글 목록 -인한
+5. 공동구매 참여 목록 - 인한
+6. 자신의 게시글 삭제 - 인한
+
+
+거래 친구 -- 건열
+8. 채팅
+9. 거래친구 목록 보기
+10. 거래친구 추가, 삭제
+
+
+백마지수 평가 -- 다하고 시간 남는사람
+
+ 어드민 -- 한승훈
+
+프로필 아바타 누르면 드롭박스 내려오게 할건데,
+어드민일 경우 회원관리, 게시글관리가 드롭박스에 있음
+
+1. 회원 조회
+2. 회원 삭제
+3. 게시글 관리
 
 ## Index
 > <b><a href="#system-architecture">System Architecture</a></b><br>
