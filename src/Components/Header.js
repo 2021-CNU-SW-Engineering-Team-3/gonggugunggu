@@ -3,8 +3,6 @@ import { React, useRef, useState } from "react";
 import { Link, withRouter, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-const navList = [{ path: "/Board", pathName: "board", name: "게시판" }];
-
 const Header = styled.header`
   position: fixed;
   top: 0;
@@ -13,6 +11,7 @@ const Header = styled.header`
   align-items: center;
   width: 100%;
   height: 70px;
+  padding: 0px 200px;
   background-color: #fff;
   box-shadow: 0 0 10px -5px #303030;
   z-index: 1000; //z축 순서 스크롤해도 최상위 유지
@@ -54,30 +53,25 @@ const NavLink = styled.div`
   }
 `;
 
-const LoginBox = styled.div`
+const SeachBox = styled.input`
+  margin-left: 20px;
+`;
+
+const HeaderLeft = styled.div`
   display: flex;
-  align-items: center;
 `;
 
 const MyHeader = ({ isLoggedIn, avataURL }) => {
-  const navigate = useNavigate();
-
   return (
     <>
       <Header>
         <FlexBox className="inner">
-          <div>logo</div>
-
           <Gnb>
-            <NavGroup>
-              {navList.map(({ path, name }, idx) => (
-                <NavLink key={idx}>
-                  <Link to={path} onClick={() => {}}>
-                    {name}
-                  </Link>
-                </NavLink>
-              ))}
-            </NavGroup>
+            <HeaderLeft>
+              <div>logo</div>
+              <SeachBox />
+            </HeaderLeft>
+
             <NavGroup>
               <NavLink>
                 {isLoggedIn ? (
