@@ -2,7 +2,7 @@
 > **공구궁구 = 공동구매 + 궁동구매**
 > > GongguGunggu is an application that guarantees reliable joint purchases to people living in Gung-dong.
 
-## 📝 Index
+## Index
 > <b><a href="#system-architecture">System Architecture</a></b><br>
 > <b><a href="#development-stack">Development Stack</a> </b><br>
 > <b><a href="#frontend">Frontend</a></b>  <br>
@@ -11,12 +11,12 @@
 > <b><a href="#contributors">Contributors</a></b><br>
 > <b><a href="#prerequisites">Prerequisites</a></b><br>
 
-## ⚙ System Architecture
+## System Architecture
 
 
 <br>
 
-## 🛠 Development Stack
+## Development Stack
 <p align="center">
   <img src="https://img.shields.io/badge/React-v17.0.2-blue" />
   <img src="https://img.shields.io/badge/Firebase-blue" />
@@ -30,15 +30,15 @@
 
 <br>
 
-## 🖼 Frontend
-### 🏠 Structure
+## Frontend
+### Structure
   > [src/~~~](./src/~~~) : Directory for ~~~   
 
 <div align="right">
     <b><a href="#2021-cnu-sw-engineering">⬆️ Back to Top</a></b>
 </div>
 
-## ✨ Backend
+## Backend
   > Firebase 간략 소개~~~
 
 <div align="right">
@@ -54,7 +54,7 @@
 </div>
 
 
-## 👩‍👩‍👧‍👧🧑 Contributors
+## Contributors
 | Name | Country | Where to find us | Role |
 | ---- | ------- | ----------------- | ---- |
 | Inhan Kang <br /> <img src="https://avatars.githubusercontent.com/inhan05053" width="100" />  | Republic of Korea | [Github](https://github.com/inhan05053)| 역할 |
@@ -66,7 +66,7 @@
     <b><a href="#2021-cnu-sw-engineering">⬆️ Back to Top</a></b>
 </div>
 
-## 📌 Prerequisites
+## Prerequisites
 
 -   Windows : ~~~
 -   Mac : ~~~
