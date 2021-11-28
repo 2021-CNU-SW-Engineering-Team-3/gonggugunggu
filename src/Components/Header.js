@@ -1,7 +1,8 @@
-/* eslint-disable import/no-anonymous-default-export */
-import { React, useRef, useState } from "react";
-import { Link, withRouter, useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AiOutlineSearch } from 'react-icons/all';
+import styled from 'styled-components';
+import logo from '../Images/gonggugunggu.png';
 
 const Header = styled.header`
   position: fixed;
@@ -11,9 +12,7 @@ const Header = styled.header`
   align-items: center;
   width: 100%;
   height: 70px;
-  padding: 0px 200px;
   background-color: #fff;
-  box-shadow: 0 0 10px -5px #303030;
   z-index: 1000; //z축 순서 스크롤해도 최상위 유지
 
   @media only screen and (max-width: 900px) {
@@ -26,15 +25,15 @@ const FlexBox = styled.div`
   align-items: center;
 `;
 
-const Logo = styled.img`
-  width: 200px;
-`;
-
 const Gnb = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
+`;
+
+const Logo = styled.img`
+  width: 200px;
 `;
 
 const NavGroup = styled.div`
@@ -45,48 +44,72 @@ const NavGroup = styled.div`
 
 const NavLink = styled.div`
   margin-left: 40px;
-  font-weight: 800;
-  font-size: 18px;
-
+  font-weight: 500;
+  font-size: 16px;
   &:hover {
+    color: gray;
     padding-bottom: 2px;
   }
 `;
 
-const SeachBox = styled.input`
-  margin-left: 20px;
-`;
-
 const HeaderLeft = styled.div`
   display: flex;
+  align-items: center;
 `;
 
-const MyHeader = ({ isLoggedIn, avataURL }) => {
-  return (
-    <>
-      <Header>
-        <FlexBox className="inner">
-          <Gnb>
-            <HeaderLeft>
-              <div>logo</div>
-              <SeachBox />
-            </HeaderLeft>
+const SeachBox = styled.input`
+  height: 35px;
+  width: 200px;
+  border: none;
+  font-size: 15px;
+  &:focus {
+    outline: none;
+  }
+`;
 
-            <NavGroup>
-              <NavLink>
-                {isLoggedIn ? (
-                  <>{/* <Avata avataURL={avataURL} /> */}</>
-                ) : (
-                  <Link to={"/Auth"} onClick={() => {}}>
-                    로그인
-                  </Link>
-                )}
-              </NavLink>
-            </NavGroup>
-          </Gnb>
-        </FlexBox>
-      </Header>
-    </>
+const Textfield = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  margin-left: 40px;
+  height: 40px;
+  width: 350px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+
+  @media only screen and (max-width: 800px) {
+    display: none;
+  }
+`;
+
+const MyHeader = ({ isLoggedIn }) => {
+  const navigation = useNavigate();
+
+  return (
+    <Header>
+      <FlexBox className='inner'>
+        <Gnb>
+          <HeaderLeft>
+            <Logo
+              src={logo}
+              onClick={() => {
+                navigation('/');
+              }}
+            />
+            <Textfield>
+              <SeachBox placeholder='물품명을 입력하여 검색해보세요!' />
+              <AiOutlineSearch />
+            </Textfield>
+          </HeaderLeft>
+          <NavGroup>
+            <NavLink>
+              {isLoggedIn ? <>{/* <Avata avataURL={avataURL} /> */}</> : <Link to={'/Auth'}>로그인하기</Link>}
+            </NavLink>
+          </NavGroup>
+        </Gnb>
+      </FlexBox>
+    </Header>
   );
 };
 

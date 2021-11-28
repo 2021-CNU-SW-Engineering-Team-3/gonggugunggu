@@ -1,5 +1,5 @@
-import { createGlobalStyle } from "styled-components";
-import reset from "styled-reset";
+import { createGlobalStyle } from 'styled-components';
+import reset from 'styled-reset';
 
 const GlobalStyles = createGlobalStyle`
     ${reset}
@@ -41,7 +41,7 @@ const GlobalStyles = createGlobalStyle`
 
     .inner {
         width: 100%;
-        max-width: 1400px;
+        max-width: 1440px;
         padding: 0px 80px;
         margin: 0 auto;
     }
