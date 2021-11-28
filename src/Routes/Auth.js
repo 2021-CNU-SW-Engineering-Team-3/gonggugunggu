@@ -2,6 +2,23 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+const LoginWrap = styled.div`
+  min-height: calc(100vh - 190px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+`;
+
+const LoginBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 370px;
+  padding-bottom: 70px;
+`;
+
 const Logo = styled.div`
   font-size: 70px;
   font-weight: 700;
@@ -36,25 +53,15 @@ const Button = styled.button`
   font-size: 18px;
   margin: 8px 0;
   width: 100%;
+  height: 50px;
   border: none;
   border-radius: 5px;
-`;
 
-const LoginWrap = styled.div`
-  min-height: calc(100vh - 190px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-`;
-
-const LoginBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 370px;
-  padding-bottom: 70px;
+  &:hover {
+    opacity: 0.8;
+    color: white;
+    transition: all ease-out 0.1s;
+  }
 `;
 
 const Auth = () => {
@@ -67,22 +74,10 @@ const Auth = () => {
 
         {<div style={{ color: 'red' }}>{}</div>}
 
-        <Button color={'black'} name='signin'>
-          LOGIN
-        </Button>
-
+        <Button color={'black'}>LOGIN</Button>
         <Link to={'/Register'} style={{ width: '100%' }}>
-          <Button color='#8E8E8E' name='signup'>
-            회원가입
-          </Button>
+          <Button color='black'>회원가입</Button>
         </Link>
-
-        <Button color='#8E8E8E' name='google'>
-          Continue with Google
-        </Button>
-        <Button color='#8E8E8E' name='github'>
-          Continue with Github
-        </Button>
       </LoginBox>
     </LoginWrap>
   );
