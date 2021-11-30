@@ -14,16 +14,16 @@ import { authService } from '../fbase';
  * Global Object
  */
 const userDropdownItems = [
-  { id: 1, name: '내 정보', path: '/Profile', pathName: 'profile' },
-  { id: 2, name: '참여목록', path: '/PartList', pathName: 'partList' },
-  { id: 3, name: '내가 쓴 글', path: '/MyPost', pathName: 'myLecture' },
-  { id: 4, name: '내 거래친구', path: '/MyFriend', pathName: 'myFriend' },
+  { id: 1, name: '내 정보', path: '/profile' },
+  { id: 2, name: '참여목록', path: '/partList' },
+  { id: 3, name: '내가 쓴 글', path: '/myPost' },
+  { id: 4, name: '내 거래친구', path: '/myFriend' },
 ];
 
 const adminDropdownItems = [
-  { id: 1, name: '내 정보', path: '/Profile', pathName: 'profile' },
-  { id: 2, name: '회원목록', path: '/UserList', pathName: 'userList' },
-  { id: 3, name: '게시글 목록', path: '/PostList', pathName: 'postList' },
+  { id: 1, name: '내 정보', path: '/profile' },
+  { id: 2, name: '회원목록', path: '/userList' },
+  { id: 3, name: '게시글 목록', path: '/postList' },
 ];
 
 /*
