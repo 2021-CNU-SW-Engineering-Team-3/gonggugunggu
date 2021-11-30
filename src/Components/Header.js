@@ -91,7 +91,7 @@ const NavLink = styled.div`
 
 const Text = styled.div`
   &:hover {
-    color: gray;
+    opacity: 0.7;
   }
 `;
 
@@ -123,7 +123,7 @@ const MyHeader = ({ isLoggedIn, userObj, userDocObj }) => {
                 <Avata userObj={userObj} userDocObj={userDocObj} />
               ) : (
                 <Text>
-                  <Link to={'/Auth'}>로그인하기</Link>
+                  <Link to={'/auth'}>로그인하기</Link>
                 </Text>
               )}
             </NavLink>
