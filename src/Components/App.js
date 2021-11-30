@@ -1,16 +1,32 @@
 import AppRouter from './Router';
 import GlobalStyles from './GlobalStyles';
 import { useState, useEffect } from 'react';
-import { authService } from '../fbase';
+import { authService, db } from '../fbase';
+import { doc, getDoc } from 'firebase/firestore';
+
+const fetchUser = async () => {
+  const docRef = doc(db, 'users', authService.currentUser.uid);
+  const docSnap = await getDoc(docRef);
+  return docSnap.data();
+};
 
 const App = () => {
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [avataURL, setAvataURL] = useState('');
+  const [userObj, setUserObj] = useState();
+  const [userDocObj, setUserDocObj] = useState({});
 
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if (user) {
+        fetchUser()
+          .then((user) => {
+            setUserDocObj(user);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        setUserObj(user);
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
@@ -24,7 +40,7 @@ const App = () => {
       {init ? (
         <>
           <GlobalStyles />
-          <AppRouter isLoggedIn={isLoggedIn} avataURL={avataURL} />
+          <AppRouter isLoggedIn={isLoggedIn} userObj={userObj} userDocObj={userDocObj} />
           {/* <Footer /> */}
         </>
       ) : (
