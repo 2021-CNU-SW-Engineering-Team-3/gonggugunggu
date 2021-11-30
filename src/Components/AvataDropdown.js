@@ -65,6 +65,9 @@ const DropdownItemContainer = styled.li`
   &:last-child {
     border-bottom: none;
   }
+  &:hover {
+    color: gray;
+  }
 `;
 
 const ItemName = styled.p`
