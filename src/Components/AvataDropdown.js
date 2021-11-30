@@ -66,13 +66,16 @@ const DropdownItemContainer = styled.li`
     border-bottom: none;
   }
   &:hover {
-    color: gray;
+    opacity: 0.7;
   }
 `;
 
 const ItemName = styled.p`
   padding-left: 10px;
   font-weight: 400;
+  &:hover {
+    opacity: 0.7;
+  }
 `;
 
 /*
