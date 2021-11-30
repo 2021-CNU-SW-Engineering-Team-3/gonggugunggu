@@ -139,8 +139,8 @@ const Register = () => {
             email: userCredential.user.email,
             name: name,
             role: 'user',
-            rate: 0,
-            evaluateNumber: 0,
+            totalRate: 0,
+            evaluateCount: 0,
             numberOfReport: 0,
             createdAt: serverTimestamp(),
           });
