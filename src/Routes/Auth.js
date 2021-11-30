@@ -1,9 +1,19 @@
-import { useState, useEffect } from 'react';
+/*
+ * import for react
+ */
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { authService, db, rt_db } from '../fbase';
 
+/*
+ * import for firebase
+ */
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { authService } from '../fbase';
+
+/*
+ * Styled Component
+ */
 const LoginWrap = styled.div`
   min-height: calc(100vh - 190px);
   display: flex;
@@ -71,22 +81,23 @@ const Error = styled.div`
   margin: 10px;
 `;
 
+/*
+ * Auth Component
+ */
 const Auth = () => {
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  const navigate = useNavigate();
+
   const onSignClick = () => {
     signInWithEmailAndPassword(authService, email, password)
-      .then(async (userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log(user.uid);
+      .then((userCredential) => {
+        console.log(userCredential.user);
         navigate('/');
       })
       .catch((error) => {
-        const errorCode = error.code;
         const errorMessage = error.message;
         setError(errorMessage);
       });
