@@ -1,15 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+/*
+ * import for react
+ */
+import { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
-import { authService, db, rt_db, storageService } from '../fbase';
-import { addDoc, collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
-import { ref, set, child, update, push } from 'firebase/database';
 
-import unknown from '../Images/Unknown_person.jpeg';
-import { v4 } from 'uuid';
+/*
+ * import for firebase
+ */
+import { authService, db, storageService } from '../fbase';
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { getDownloadURL, uploadString, ref as storageRef } from 'firebase/storage';
 
+/*
+ * import for image
+ */
+import unknown from '../Images/Unknown_person.jpeg';
+import { v4 } from 'uuid';
+
+/*
+ * Styled Component
+ */
 const RegisterWrap = styled.div`
   min-height: calc(100vh - 190px);
   display: flex;
@@ -56,6 +67,14 @@ const Avata = styled.img`
   }
 `;
 
+const RegisterForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+`;
+
 const TextField = styled.input`
   margin-bottom: 10px;
   border: 1px solid lightgray;
@@ -71,6 +90,11 @@ const TextField = styled.input`
   }
 `;
 
+const Error = styled.div`
+  color: red;
+  margin: 10px;
+`;
+
 const Button = styled.input`
   background-color: ${({ color }) => color};
   padding: 12px 50px;
@@ -82,7 +106,6 @@ const Button = styled.input`
   height: 50px;
   border: none;
   border-radius: 5px;
-
   &:hover {
     opacity: 0.8;
     color: white;
@@ -90,36 +113,27 @@ const Button = styled.input`
   }
 `;
 
-const RegisterForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Error = styled.div`
-  color: red;
-  margin: 10px;
-`;
-
+/*
+ * Register Component
+ */
 const Register = () => {
-  const uploadPhotoRef = useRef();
   const [selectedImg, setSelectedImg] = useState(unknown);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  const uploadPhotoRef = useRef();
+
   const onSignClick = (e) => {
     e.preventDefault();
-
     if (email.split('@')[1] !== 'o.cnu.ac.kr') {
       setError('Please input education email');
     } else {
       createUserWithEmailAndPassword(authService, email, password)
         .then(async (userCredential) => {
-          // DB에 user 추가
+          // Add to DB
+
           await setDoc(doc(db, 'users', userCredential.user.uid), {
             id: userCredential.user.uid,
             email: userCredential.user.email,
@@ -130,12 +144,16 @@ const Register = () => {
             numberOfReport: 0,
             createdAt: serverTimestamp(),
           });
+        })
+        .then(async () => {
+          // Update displayName, photoURL
 
-          // Auth에 name, photoURL 수정
+          const user = authService.currentUser;
+
           let fileURL = '';
 
           if (selectedImg !== unknown) {
-            const fileRef = storageRef(storageService, `${userCredential.user.uid}/${v4()}`);
+            const fileRef = storageRef(storageService, `${user.uid}/${v4()}`);
             const res = await uploadString(fileRef, selectedImg, 'data_url');
             fileURL = await getDownloadURL(res.ref);
           } else {
@@ -153,20 +171,12 @@ const Register = () => {
               console.long(error);
             });
 
-          set(ref(rt_db, 'users/' + userCredential.user.uid), {
-            username: name,
-            email: email,
-            profile_picture: '',
-          });
-
-          alert('해당 이메일로 인증 메일을 보냈습니다.');
           window.location.replace('/');
         })
         .then(() => {
-          // Send email
-          const user = authService.currentUser;
+          // Send Email Verification
 
-          console.log(user);
+          const user = authService.currentUser;
 
           sendEmailVerification(user)
             .then(() => {
@@ -175,6 +185,8 @@ const Register = () => {
             .catch((error) => {
               console.log(error);
             });
+
+          alert('해당 이메일로 인증 메일을 보냈습니다.');
         })
         .catch((error) => {
           const errorMessage = error.message;
@@ -187,6 +199,7 @@ const Register = () => {
     const {
       target: { name, value },
     } = e;
+
     if (name === 'email') setEmail(value);
     else if (name === 'password') setPassword(value);
     else if (name === 'name') setName(value);
@@ -199,12 +212,14 @@ const Register = () => {
 
     const file = files[0];
     const reader = new FileReader();
+
     reader.onloadend = (finishedEvent) => {
       const {
         currentTarget: { result },
       } = finishedEvent;
       setSelectedImg(result);
     };
+
     reader.readAsDataURL(file);
   };
 
@@ -229,9 +244,7 @@ const Register = () => {
             onChange={onTextChange}
             required
           />
-
           <Error>{error}</Error>
-
           <Button type='submit' color='black' name='signup' value='회원가입' />
         </RegisterForm>
       </RegisterBox>
