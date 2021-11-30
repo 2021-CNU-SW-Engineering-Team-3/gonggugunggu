@@ -1,11 +1,35 @@
-import React, { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+/*
+ * import for react
+ */
+import { useState, useCallback } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import styled from 'styled-components';
+
+/*
+ * import for firebase
+ */
 import { authService } from '../fbase';
 
+/*
+ * Global Object
+ */
+const userDropdownItems = [
+  { id: 1, name: '내 정보', path: '/Profile', pathName: 'profile' },
+  { id: 2, name: '참여목록', path: '/PartList', pathName: 'partList' },
+  { id: 3, name: '내가 쓴 글', path: '/MyPost', pathName: 'myLecture' },
+  { id: 4, name: '내 거래친구', path: '/MyFriend', pathName: 'myFriend' },
+];
+
+const adminDropdownItems = [
+  { id: 1, name: '내 정보', path: '/Profile', pathName: 'profile' },
+  { id: 2, name: '회원목록', path: '/UserList', pathName: 'userList' },
+  { id: 3, name: '게시글 목록', path: '/PostList', pathName: 'postList' },
+];
+
+/*
+ * Styled Component
+ */
 const DropdownContainer = styled.div`
-  /* width: 400px; */
   position: relative;
 
   &:hover {
@@ -21,11 +45,12 @@ const Avata = styled.img`
 
 const DropdownMenu = styled.ul`
   display: ${(props) => (props.isActive ? `block` : `none`)};
-  width: 150px;
-  background-color: white;
   position: absolute;
+  width: 150px;
+  margin-top: 5px;
+  background-color: white;
   right: 0px;
-  border: 1px solid #f4acbb;
+  border: 1px solid lightgray;
   border-radius: 3%;
 `;
 
@@ -47,29 +72,18 @@ const ItemName = styled.p`
   font-weight: 400;
 `;
 
-const AvataDropdown = ({ avataURL }) => {
+/*
+ * AvataDropdown Component
+ */
+const AvataDropdown = ({ userObj, userDocObj }) => {
   const navigate = useNavigate();
-  const dropdownItems = [
-    { id: 1, name: '프로필', path: '/Profile', pathName: 'profile' },
-    { id: 2, name: '채팅 목록', path: '/ChattingList', pathName: 'chattingList' },
-    { id: 3, name: 'My 강좌', path: '/MyLecture', pathName: 'myLecture' },
-  ];
   const [isActive, setIsActive] = useState(false);
-  const [item, setItem] = useState(null);
 
   const onActiveToggle = useCallback(() => {
     setIsActive((prev) => !prev);
   }, []);
 
   const onSelectItem = useCallback((e) => {
-    const targetId = e.target.id;
-
-    if (targetId === 'item_name') {
-      setItem(e.target.parentElement.innertText);
-    } else if (targetId === 'item') {
-      setItem(e.target.innertText);
-    }
-
     setIsActive((prev) => !prev);
   }, []);
 
@@ -80,17 +94,24 @@ const AvataDropdown = ({ avataURL }) => {
 
   return (
     <DropdownContainer>
-      <Avata onClick={onActiveToggle} src={avataURL} />
-
+      <Avata onClick={onActiveToggle} src={userObj.photoURL} />
       <DropdownMenu isActive={isActive}>
-        {dropdownItems.map((item) => (
-          <Link to={item.path} key={item.id}>
-            <DropdownItemContainer id='item' onClick={onSelectItem}>
-              <ItemName id='item_name'>{item.name}</ItemName>
-            </DropdownItemContainer>
-          </Link>
-        ))}
-        <DropdownItemContainer id='item' onClick={onLogoutClick}>
+        {userDocObj.role === 'user'
+          ? userDropdownItems.map((item) => (
+              <Link to={item.path} key={item.id}>
+                <DropdownItemContainer onClick={onSelectItem}>
+                  <ItemName id='item_name'>{item.name}</ItemName>
+                </DropdownItemContainer>
+              </Link>
+            ))
+          : adminDropdownItems.map((item) => (
+              <Link to={item.path} key={item.id}>
+                <DropdownItemContainer onClick={onSelectItem}>
+                  <ItemName id='item_name'>{item.name}</ItemName>
+                </DropdownItemContainer>
+              </Link>
+            ))}
+        <DropdownItemContainer onClick={onLogoutClick}>
           <ItemName id='item_name' style={{ color: 'red' }}>
             로그아웃
           </ItemName>

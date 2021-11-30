@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import { authService } from '../fbase';
+// import { authService } from '../fbase';
 
 const Text = styled.div`
   margin: 30px;
@@ -8,7 +8,7 @@ const Text = styled.div`
 
 const Home = () => {
   useEffect(() => {
-    console.log(authService.currentUser);
+    // console.log(authService.currentUser);
   }, []);
   return <Text>home</Text>;
 };

@@ -4,10 +4,10 @@ import Home from '../Routes/Home';
 import Auth from '../Routes/Auth';
 import Register from '../Routes/Register';
 
-const AppRouter = ({ isLoggedIn, avataURL }) => {
+const AppRouter = ({ isLoggedIn, userObj, userDocObj }) => {
   return (
     <Router>
-      <MyHeader isLoggedIn={isLoggedIn} avataURL={avataURL} />
+      <MyHeader isLoggedIn={isLoggedIn} userObj={userObj} userDocObj={userDocObj} />
       <main>
         <Routes>
           <Route path='/' element={<Home />} />

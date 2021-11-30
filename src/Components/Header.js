@@ -1,10 +1,19 @@
-import { useState, useEffect } from 'react';
+/*
+ * import for react
+ */
 import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineSearch } from 'react-icons/all';
 import styled from 'styled-components';
 import Avata from './AvataDropdown.js';
+
+/*
+ * import for image
+ */
 import logo from '../Images/gonggugunggu.png';
 
+/*
+ * Styled Component
+ */
 const Header = styled.header`
   position: fixed;
   top: 0;
@@ -33,39 +42,13 @@ const Gnb = styled.div`
   width: 100%;
 `;
 
-const Logo = styled.img`
-  width: 200px;
-`;
-
-const NavGroup = styled.div`
-  display: flex;
-  align-items: center;
-  margin-left: 40px;
-`;
-
-const NavLink = styled.div`
-  margin-left: 40px;
-  font-weight: 500;
-  font-size: 16px;
-  &:hover {
-    color: gray;
-    padding-bottom: 2px;
-  }
-`;
-
 const HeaderLeft = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const SeachBox = styled.input`
-  height: 35px;
+const Logo = styled.img`
   width: 200px;
-  border: none;
-  font-size: 15px;
-  &:focus {
-    outline: none;
-  }
 `;
 
 const Textfield = styled.div`
@@ -84,7 +67,38 @@ const Textfield = styled.div`
   }
 `;
 
-const MyHeader = ({ isLoggedIn, avataURL }) => {
+const SeachBox = styled.input`
+  height: 35px;
+  width: 200px;
+  border: none;
+  font-size: 15px;
+  &:focus {
+    outline: none;
+  }
+`;
+
+const NavGroup = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 40px;
+`;
+
+const NavLink = styled.div`
+  margin-left: 40px;
+  font-weight: 500;
+  font-size: 16px;
+`;
+
+const Text = styled.div`
+  &:hover {
+    color: gray;
+  }
+`;
+
+/*
+ * MyHeader Component
+ */
+const MyHeader = ({ isLoggedIn, userObj, userDocObj }) => {
   const navigation = useNavigate();
 
   return (
@@ -105,7 +119,13 @@ const MyHeader = ({ isLoggedIn, avataURL }) => {
           </HeaderLeft>
           <NavGroup>
             <NavLink>
-              {isLoggedIn ? <Avata avataURL={avataURL} /> : <Link to={'/Auth'}>로그인하기</Link>}
+              {isLoggedIn ? (
+                <Avata userObj={userObj} userDocObj={userDocObj} />
+              ) : (
+                <Text>
+                  <Link to={'/Auth'}>로그인하기</Link>
+                </Text>
+              )}
             </NavLink>
           </NavGroup>
         </Gnb>
