@@ -1,15 +1,28 @@
+/*
+ * import for react
+ */
 import AppRouter from './Router';
 import GlobalStyles from './GlobalStyles';
 import { useState, useEffect } from 'react';
+
+/*
+ * import for firebase
+ */
 import { authService, db } from '../fbase';
 import { doc, getDoc } from 'firebase/firestore';
 
+/*
+ * Global function
+ */
 const fetchUser = async () => {
   const docRef = doc(db, 'users', authService.currentUser.uid);
   const docSnap = await getDoc(docRef);
   return docSnap.data();
 };
 
+/*
+ * App Component
+ */
 const App = () => {
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
