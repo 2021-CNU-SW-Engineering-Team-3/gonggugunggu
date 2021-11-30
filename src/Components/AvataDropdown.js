@@ -44,6 +44,7 @@ const Avata = styled.img`
 `;
 
 const DropdownMenu = styled.ul`
+  animation: dropdownAppear 0.6s;
   display: ${(props) => (props.isActive ? `block` : `none`)};
   position: absolute;
   width: 150px;
@@ -52,6 +53,15 @@ const DropdownMenu = styled.ul`
   right: 0px;
   border: 1px solid lightgray;
   border-radius: 3%;
+
+  @keyframes dropdownAppear {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 const DropdownItemContainer = styled.li`

@@ -24,7 +24,7 @@ const AppRouter = ({ isLoggedIn, userObj, userDocObj }) => {
           <Route path='/' element={<Home />} />
           <Route path='/auth' element={<Auth />} />
           <Route path='/register' element={<Register />} />
-          <Route path='/profile' element={<Profile />} />
+          <Route path='/profile' element={<Profile userObj={userObj} userDocObj={userDocObj} />} />
         </Routes>
       </main>
     </Router>
