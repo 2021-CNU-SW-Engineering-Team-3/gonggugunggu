@@ -127,7 +127,7 @@ const Auth = () => {
         <Button color={'black'} onClick={onSignClick}>
           LOGIN
         </Button>
-        <Link to={'/Register'} style={{ width: '100%' }}>
+        <Link to={'/register'} style={{ width: '100%' }}>
           <Button color='black'>회원가입</Button>
         </Link>
       </LoginBox>
