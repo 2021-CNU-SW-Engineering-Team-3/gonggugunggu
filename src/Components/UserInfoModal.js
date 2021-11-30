@@ -2,7 +2,7 @@
  * import for react
  */
 import { useState, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 /*
  * import for image
@@ -20,22 +20,22 @@ import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 /*
  * Styled Component
  */
-const Background = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1002;
+const modalAppear = keyframes`
+    0% {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
 `;
 
 const ModalContainer = styled.div`
-  animation: modalAppear 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 500px;
   height: 700px;
   background-color: white;
@@ -44,16 +44,12 @@ const ModalContainer = styled.div`
   position: fixed;
   border-radius: 20px;
 
-  @keyframes modalAppear {
-    from {
-      opacity: 0;
-      transform: translateY(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+  animation: ${(props) =>
+    props.infoToggle
+      ? css`
+          ${modalAppear} 0.6s cubic-bezier(0.77, 0, 0.175, 1) forwards
+        `
+      : ''};
 `;
 
 const Infos = styled.div`
@@ -61,15 +57,6 @@ const Infos = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 40px;
-`;
-
-const Title = styled.div`
-  font-size: 30px;
-  position: absolute;
-  left: 50px;
-  top: 50px;
-  font-weight: 700;
 `;
 
 const PhotoSelect = styled.input`
@@ -81,7 +68,7 @@ const Avata = styled.img`
   height: 150px;
   border-radius: 50%;
   margin-bottom: 25px;
-  margin-top: 120px;
+  margin-top: 18px;
   &:hover {
     opacity: 0.7;
     transition: all ease-out 0.2s;
@@ -110,46 +97,36 @@ const Name = styled.input`
 
 const Buttons = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-around;
   align-items: center;
-  width: 100%;
+  width: 180px;
 `;
 
 const Button = styled.button`
+  color: black;
+  justify-content: center;
   font-size: 18px;
-  color: white;
-  background-color: black;
-  padding: 12px 50px;
-  margin: 8px 0;
-  width: 40%;
-  height: 50px;
-  margin: 5px;
-  border-radius: 5px;
 
   &:hover {
     opacity: 0.7;
-    transition: all ease-out 0.2s;
+    transition: all ease-out 0.3s 0s;
   }
 `;
 
 const CancelButton = styled.button`
+  color: red;
   font-size: 18px;
-  color: white;
-  padding: 12px 50px;
-  margin: 8px 0;
-  width: 40%;
-  height: 50px;
-  margin: 5px;
-  color: black;
+  justify-content: center;
   background-color: white;
+
   &:hover {
     opacity: 0.7;
-    transition: all ease-out 0.2s;
+    transition: all ease-out 0.2s 0s;
   }
 `;
 
-const UserInfoModal = ({ setAvataURL, setUserName, userObj, onModalClick }) => {
+const UserInfoModal = ({ infoToggle, setAvataURL, setUserName, userObj, onModalClick }) => {
   const [selectedImg, setSelectedImg] = useState(userObj.photoURL);
   const [tempName, setTempName] = useState(userObj.displayName);
 
@@ -230,10 +207,10 @@ const UserInfoModal = ({ setAvataURL, setUserName, userObj, onModalClick }) => {
 
   return (
     <>
-      <Background onClick={onModalClick} name='info' />
-      <ModalContainer>
+      {/* <Background onClick={onModalClick} name='info' /> */}
+      <ModalContainer infoToggle={infoToggle}>
         <Infos>
-          <Title>정보 수정</Title>
+          {/* <Title>정보 수정</Title> */}
 
           <PhotoSelect
             type='file'
