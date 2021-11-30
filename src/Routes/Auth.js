@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { authService, db, rt_db } from '../fbase';
 
 const LoginWrap = styled.div`
   min-height: calc(100vh - 190px);
@@ -64,17 +66,56 @@ const Button = styled.button`
   }
 `;
 
+const Error = styled.div`
+  color: red;
+  margin: 10px;
+`;
+
 const Auth = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const onSignClick = () => {
+    signInWithEmailAndPassword(authService, email, password)
+      .then(async (userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user.uid);
+        navigate('/');
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setError(errorMessage);
+      });
+  };
+
+  const onTextChange = (e) => {
+    const {
+      target: { name, value },
+    } = e;
+    if (name === 'email') setEmail(value);
+    else if (name === 'password') setPassword(value);
+  };
+
   return (
     <LoginWrap>
       <LoginBox>
         <Logo>LOGIN</Logo>
-        <TextField placeholder={'이메일'} id='email' name='email' />
-        <TextField type='password' placeholder={'비밀번호'} id='password' name='password' />
-
-        {<div style={{ color: 'red' }}>{}</div>}
-
-        <Button color={'black'}>LOGIN</Button>
+        <TextField placeholder={'이메일'} id='email' name='email' onChange={onTextChange} />
+        <TextField
+          type='password'
+          placeholder={'비밀번호'}
+          id='password'
+          name='password'
+          onChange={onTextChange}
+        />
+        <Error>{error}</Error>
+        <Button color={'black'} onClick={onSignClick}>
+          LOGIN
+        </Button>
         <Link to={'/Register'} style={{ width: '100%' }}>
           <Button color='black'>회원가입</Button>
         </Link>

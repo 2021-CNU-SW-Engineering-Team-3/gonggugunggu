@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineSearch } from 'react-icons/all';
 import styled from 'styled-components';
+import Avata from './AvataDropdown.js';
 import logo from '../Images/gonggugunggu.png';
 
 const Header = styled.header`
@@ -83,7 +84,7 @@ const Textfield = styled.div`
   }
 `;
 
-const MyHeader = ({ isLoggedIn }) => {
+const MyHeader = ({ isLoggedIn, avataURL }) => {
   const navigation = useNavigate();
 
   return (
@@ -104,7 +105,7 @@ const MyHeader = ({ isLoggedIn }) => {
           </HeaderLeft>
           <NavGroup>
             <NavLink>
-              {isLoggedIn ? <>{/* <Avata avataURL={avataURL} /> */}</> : <Link to={'/Auth'}>로그인하기</Link>}
+              {isLoggedIn ? <Avata avataURL={avataURL} /> : <Link to={'/Auth'}>로그인하기</Link>}
             </NavLink>
           </NavGroup>
         </Gnb>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { authService, db, rt_db, storageService } from '../fbase';
 import { addDoc, collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { ref, set, child, update, push } from 'firebase/database';
@@ -32,7 +32,7 @@ const Logo = styled.div`
   font-size: 70px;
   font-weight: 700;
   color: black;
-  margin-bottom: 30px;
+  margin: 30px;
 
   @media only screen and (max-width: 800px) {
     font-size: 50px;
@@ -90,6 +90,19 @@ const Button = styled.input`
   }
 `;
 
+const RegisterForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Error = styled.div`
+  color: red;
+  margin: 10px;
+`;
+
 const Register = () => {
   const uploadPhotoRef = useRef();
   const [selectedImg, setSelectedImg] = useState(unknown);
@@ -100,59 +113,74 @@ const Register = () => {
 
   const onSignClick = (e) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(authService, email, password)
-      .then(async (userCredential) => {
-        // Signed in
-        const user = userCredential.user;
 
-        let fileURL = '';
-
-        if (selectedImg !== unknown) {
-          const fileRef = storageRef(storageService, `${user.uid}/${v4()}`);
-          const res = await uploadString(fileRef, selectedImg, 'data_url');
-          fileURL = await getDownloadURL(res.ref);
-        } else {
-          fileURL = unknown;
-        }
-
-        await setDoc(doc(db, 'users', user.uid), {
-          id: user.uid,
-          email: user.email,
-          name: name,
-          role: 'student',
-          major: null,
-          photoURL: fileURL,
-          rate: 0,
-          evaluateNumber: 0,
-          bio: null,
-          myLecture: [],
-          numberOfReport: 0,
-          createdAt: serverTimestamp(),
-        });
-
-        updateProfile(authService.currentUser, {
-          displayName: name,
-          photoURL: fileURL,
-        })
-          .then(() => {
-            console.log('update profile');
-          })
-          .catch((error) => {
-            console.long(error);
+    if (email.split('@')[1] !== 'o.cnu.ac.kr') {
+      setError('Please input education email');
+    } else {
+      createUserWithEmailAndPassword(authService, email, password)
+        .then(async (userCredential) => {
+          // DB에 user 추가
+          await setDoc(doc(db, 'users', userCredential.user.uid), {
+            id: userCredential.user.uid,
+            email: userCredential.user.email,
+            name: name,
+            role: 'user',
+            rate: 0,
+            evaluateNumber: 0,
+            numberOfReport: 0,
+            createdAt: serverTimestamp(),
           });
 
-        set(ref(rt_db, 'users/' + user.uid), {
-          username: name,
-          email: email,
-          profile_picture: '',
+          // Auth에 name, photoURL 수정
+          let fileURL = '';
+
+          if (selectedImg !== unknown) {
+            const fileRef = storageRef(storageService, `${userCredential.user.uid}/${v4()}`);
+            const res = await uploadString(fileRef, selectedImg, 'data_url');
+            fileURL = await getDownloadURL(res.ref);
+          } else {
+            fileURL = unknown;
+          }
+
+          updateProfile(authService.currentUser, {
+            displayName: name,
+            photoURL: fileURL,
+          })
+            .then(() => {
+              console.log('update profile');
+            })
+            .catch((error) => {
+              console.long(error);
+            });
+
+          set(ref(rt_db, 'users/' + userCredential.user.uid), {
+            username: name,
+            email: email,
+            profile_picture: '',
+          });
+
+          alert('해당 이메일로 인증 메일을 보냈습니다.');
+          window.location.replace('/');
+        })
+        .then(() => {
+          // Send email
+          const user = authService.currentUser;
+
+          console.log(user);
+
+          sendEmailVerification(user)
+            .then(() => {
+              console.log('이메일 전송');
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          setError(errorMessage);
         });
-        window.location.replace('/');
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        setError(errorMessage);
-      });
+    }
   };
 
   const onTextChange = (e) => {
@@ -190,7 +218,7 @@ const Register = () => {
         <Logo>REGISTER</Logo>
         <PhotoSelect type='file' accept='image/*' ref={uploadPhotoRef} name='photo' onChange={onImgChange} />
         <Avata src={selectedImg} onClick={onPhotoClick} />
-        <form onSubmit={onSignClick}>
+        <RegisterForm onSubmit={onSignClick}>
           <TextField placeholder={'이름'} id='name' name='name' onChange={onTextChange} required />
           <TextField placeholder={'이메일'} id='email' name='email' onChange={onTextChange} required />
           <TextField
@@ -202,10 +230,10 @@ const Register = () => {
             required
           />
 
-          {<div style={{ color: 'red' }}>{error}</div>}
+          <Error>{error}</Error>
 
           <Button type='submit' color='black' name='signup' value='회원가입' />
-        </form>
+        </RegisterForm>
       </RegisterBox>
     </RegisterWrap>
   );
