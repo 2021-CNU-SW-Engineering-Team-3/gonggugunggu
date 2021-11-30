@@ -170,15 +170,11 @@ const Register = () => {
             .catch((error) => {
               console.long(error);
             });
-
-          window.location.replace('/');
         })
         .then(() => {
           // Send Email Verification
 
-          const user = authService.currentUser;
-
-          sendEmailVerification(user)
+          sendEmailVerification(authService.currentUser)
             .then(() => {
               console.log('이메일 전송');
             })
@@ -187,6 +183,8 @@ const Register = () => {
             });
 
           alert('해당 이메일로 인증 메일을 보냈습니다.');
+
+          window.location.replace('/');
         })
         .catch((error) => {
           const errorMessage = error.message;
