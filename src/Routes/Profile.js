@@ -71,7 +71,7 @@ const Pin = styled.span`
 `;
 
 const Text = styled.span`
-  font-size: 25px;
+  font-size: 20px;
 `;
 const TitleAppear = keyframes`
     0% {

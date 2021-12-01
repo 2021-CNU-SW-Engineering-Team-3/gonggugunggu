@@ -69,7 +69,7 @@ const Pin = styled.span`
 `;
 
 const Text = styled.span`
-  font-size: 25px;
+  font-size: 20px;
 `;
 
 const CardAppear = keyframes`
@@ -93,7 +93,11 @@ const TitleAppear = keyframes`
 `;
 
 const TitleContainer = styled(Container)`
+  display: flex;
+  flex-direction: row;
   margin-top: 120px;
+  justify-content: space-between;
+  align-items: flex-end;
   animation: ${TitleAppear} 0.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
 
   @media only screen and (max-width: 992px) {
@@ -136,6 +140,27 @@ const SubTitle = styled.div`
     font-size: 23px;
     margin: 0 50px;
     margin-bottom: 0px;
+  }
+`;
+
+const PostingButton = styled.button`
+  background-color: #ededed;
+  font-size: 16px;
+  font-weight: 700;
+  width: 140px;
+  height: 45px;
+  margin-bottom: 50px;
+  border-radius: 25px;
+  transition: all ease-out 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+    transition: all ease-out 0.2s;
+  }
+  &:focus {
+    opacity: 1;
+    background-color: lightgray;
+    transition: all ease-out 0.2s;
   }
 `;
 
@@ -202,8 +227,12 @@ const Home = ({ data }) => {
         </FlexBox>
       </Header>
       <TitleContainer>
-        <Title className='g-4'>📌 공동구매</Title>
-        <SubTitle>가장 저렴하게 물건을 구할 수 있는 방법</SubTitle>
+        <div>
+          <Title className='g-4'>📌 공동구매</Title>
+          <SubTitle>가장 저렴하게 물건을 구할 수 있는 방법</SubTitle>
+        </div>
+
+        <PostingButton>게시글 작성</PostingButton>
       </TitleContainer>
       <CardContainer>
         <Row xs={1} sm={1} md={2} lg={3} className='g-4'>

@@ -69,20 +69,24 @@ const DropdownItemContainer = styled.li`
   padding: 9px 14px;
   border-bottom: 2px solid #d2d2d2;
   border-top: none;
+  color: black;
 
   &:last-child {
     border-bottom: none;
   }
   &:hover {
     opacity: 0.7;
+    transition: all ease-out 0.2s;
   }
 `;
 
 const ItemName = styled.p`
   padding-left: 10px;
   font-weight: 400;
+
   &:hover {
     opacity: 0.7;
+    transition: all ease-out 0.2s;
   }
 `;
 
