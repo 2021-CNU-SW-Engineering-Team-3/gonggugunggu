@@ -129,7 +129,7 @@ const MyHeader = ({ isLoggedIn, userObj, userDocObj }) => {
   const handleScroll = () => {
     const { pageYOffset } = window;
     const deltaY = pageYOffset - pageY;
-    const hide = pageYOffset >= 100 && deltaY >= 0;
+    const hide = pageYOffset >= 150 && deltaY >= 0;
     setHide(hide);
     setPageY(pageYOffset);
   };
