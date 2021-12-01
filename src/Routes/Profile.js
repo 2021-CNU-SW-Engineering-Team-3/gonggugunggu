@@ -1,9 +1,10 @@
 /*
  * import for react
  */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { Container, Card } from 'react-bootstrap';
 
 /*
  * import for firebase
@@ -20,60 +21,166 @@ import UserInfoModal from '../Components/UserInfoModal';
 /*
  * Styled Component
  */
-const profileAppear = keyframes`
-    from {
+const Header = styled.header`
+  position: fixed;
+  top: 70px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 70px;
+  background-color: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  z-index: -1; //z축 순서 스크롤해도 최상위 유지
+
+  &.show {
+    z-index: 1000;
+    transition: all ease-out 0.2s;
+  }
+  &.move {
+    z-index: 1000;
+    transform: translateY(-70px);
+    transition: all ease-out 0.2s;
+  }
+
+  @media only screen and (max-width: 900px) {
+    width: 900px;
+  }
+`;
+
+const FlexBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Gnb = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  font-weight: 700;
+`;
+
+const Pin = styled.span`
+  font-size: 30px;
+  margin-right: 8px;
+`;
+
+const Text = styled.span`
+  font-size: 25px;
+`;
+const TitleAppear = keyframes`
+    0% {
       opacity: 0;
-      transform: translateY(50px);
+      transform: translateX(50px);
     }
-    to {
+    100% {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateX(0);
     }
 `;
 
-const ProfileWrap = styled.div`
+const TitleContainer = styled(Container)`
+  margin-top: 120px;
+  animation: ${TitleAppear} 0.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+
+  @media only screen and (max-width: 992px) {
+    margin-top: 90px;
+  }
+  @media only screen and (max-width: 768px) {
+    margin-top: 70px;
+  }
+`;
+
+const Title = styled.div`
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 25px;
+
+  @media only screen and (max-width: 992px) {
+    font-size: 40px;
+    font-weight: 800;
+    margin-bottom: 20px;
+  }
+  @media only screen and (max-width: 768px) {
+    font-size: 30px;
+    font-weight: 800;
+    margin: 0 50px;
+    margin-bottom: 18px;
+  }
+`;
+
+const SubTitle = styled.div`
+  font-size: 36px;
+  font-weight: 500;
+  margin-bottom: 50px;
+
+  @media only screen and (max-width: 992px) {
+    font-size: 35px;
+    margin-bottom: 30px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    font-size: 23px;
+    margin: 0 50px;
+    margin-bottom: 0px;
+  }
+`;
+const profileAppear = keyframes`
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+`;
+
+const ProfileWrap = styled(Card)`
   animation: ${profileAppear} 0.6s cubic-bezier(0.77, 0, 0.175, 1) forwards;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   margin: 0 auto;
-  margin-top: 150px;
+  margin-top: 80px;
   padding: 40px;
   border-radius: 20px;
+  border: none;
 `;
 
-const Avata = styled.img`
-  width: 150px;
-  height: 150px;
+const Avata = styled(Card.Img)`
+  width: 250px;
+  height: 250px;
   border-radius: 50%;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+
+  @media only screen and (max-width: 992px) {
+    width: 230px;
+    height: 230px;
+  }
+  @media only screen and (max-width: 768px) {
+    width: 200px;
+    height: 200px;
+  }
 `;
 
-const Name = styled.div`
-  font-size: 45px;
+const Name = styled(Card.Title)`
+  font-size: 50px;
   font-weight: 700;
-  margin: 15px;
-`;
-
-const Email = styled.div`
-  font-size: 20px;
-  font-weight: 200;
-  margin: 5px;
 `;
 
 const Infos = styled.div`
   display: flex;
   flex-direction: column;
+  margin-bottom: 50px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 80px;
 `;
 
 const Info = styled.div`
-  font-size: 20px;
+  font-size: 23px;
   font-weight: 200;
-  margin: 10px;
+  margin-bottom: 5px;
 `;
 
 const Buttons = styled.div`
@@ -87,7 +194,7 @@ const Buttons = styled.div`
 const Button = styled.button`
   color: black;
   justify-content: center;
-  font-size: 18px;
+  font-size: 20px;
 
   &:hover {
     opacity: 0.7;
@@ -97,7 +204,7 @@ const Button = styled.button`
 
 const ResignButton = styled.button`
   color: red;
-  font-size: 18px;
+  font-size: 20px;
   justify-content: center;
 
   background-color: white;
@@ -108,12 +215,48 @@ const ResignButton = styled.button`
   }
 `;
 
+/*
+ * Global Function
+ */
+const throttle = function (callback, waitTime) {
+  let timerId = null;
+  return (e) => {
+    if (timerId) return;
+    timerId = setTimeout(() => {
+      callback.call(this, e);
+      timerId = null;
+    }, waitTime);
+  };
+};
+
 const Profile = ({ userObj, userDocObj }) => {
+  const navigate = useNavigate();
+
   const [infoToggle, setInfoToggle] = useState(false);
   const [userName, setUserName] = useState(userObj.displayName);
   const [avataURL, setAvataURL] = useState(userObj.photoURL);
 
-  const navigate = useNavigate();
+  const [show, setShow] = useState(false);
+  const [move, setMove] = useState(false);
+  const [pageY, setPageY] = useState(0);
+  const documentRef = useRef(document);
+
+  const handleScroll = () => {
+    const { pageYOffset } = window;
+    console.log(pageYOffset);
+    const show = pageYOffset >= 70;
+    const move = pageYOffset >= 150;
+    setShow(show);
+    setMove(move);
+    setPageY(pageYOffset);
+  };
+
+  const throttleScroll = throttle(handleScroll, 50);
+
+  useEffect(() => {
+    documentRef.current.addEventListener('scroll', throttleScroll);
+    return () => documentRef.current.removeEventListener('scroll', throttleScroll);
+  }, [pageY]);
 
   const onResignClick = () => {
     const user = authService.currentUser;
@@ -150,45 +293,38 @@ const Profile = ({ userObj, userDocObj }) => {
   };
 
   return (
-    <ProfileWrap>
-      {userDocObj.role === 'user' ? (
-        <>
-          <Infos>
-            <Avata src={avataURL} />
-            <Name>{userName}</Name>
-            <Email>{userObj.email}</Email>
-            <Info>
-              백마지수 :
-              {userDocObj.evaluateCount > 0
-                ? Math.round((userDocObj.totalRate / userDocObj.evaluateCount) * 10) / 10
-                : 0}
-            </Info>
-          </Infos>
-          <Buttons>
-            <Button color='black' name='info' onClick={onModalClick}>
-              정보 수정
-            </Button>
-            <ResignButton onClick={onResignClick}>회원 탈퇴</ResignButton>
-          </Buttons>
-        </>
-      ) : userDocObj.role === 'admin' ? (
-        <>
-          <Infos>
-            <Avata src={userObj.photoURL} />
-            <Name>{userObj.displayName}</Name>
-            <Email>{userObj.email}</Email>
-          </Infos>
-          <Buttons>
-            <Button color='black' name='info' onClick={onModalClick}>
-              정보 수정
-            </Button>
-            <ResignButton onClick={onResignClick}>회원 탈퇴</ResignButton>
-          </Buttons>
-        </>
-      ) : (
-        //TODO: 추후 로딩 애니메이션 넣어야함
-        'Loading'
-      )}
+    <>
+      <Header className={show ? (move ? 'move' : 'show') : ''}>
+        <FlexBox className='inner'>
+          <Gnb>
+            <Pin>👀</Pin>
+            <Text>프로필</Text>
+          </Gnb>
+        </FlexBox>
+      </Header>
+      <TitleContainer>
+        <Title className='g-4'>👀 프로필</Title>
+        <SubTitle>프로필 사진과 이름을 바꿀 수 있습니다</SubTitle>
+      </TitleContainer>
+      <ProfileWrap>
+        <Avata src={avataURL} />
+        <Infos>
+          <Name>{userName}</Name>
+          <Info>{userObj.email}</Info>
+          <Info>
+            백마지수 :
+            {userDocObj.evaluateCount > 0
+              ? Math.round((userDocObj.totalRate / userDocObj.evaluateCount) * 10) / 10
+              : 0}
+          </Info>
+        </Infos>
+        <Buttons>
+          <Button color='black' name='info' onClick={onModalClick}>
+            정보 수정
+          </Button>
+          <ResignButton onClick={onResignClick}>회원 탈퇴</ResignButton>
+        </Buttons>
+      </ProfileWrap>
       {infoToggle === true ? (
         <UserInfoModal
           infoToggle={infoToggle}
@@ -198,7 +334,7 @@ const Profile = ({ userObj, userDocObj }) => {
           onModalClick={onModalClick}
         />
       ) : null}
-    </ProfileWrap>
+    </>
   );
 };
 

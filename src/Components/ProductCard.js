@@ -26,6 +26,7 @@ const CardContainer = styled(Card)`
 const CardImage = styled(Card.Img)`
   height: 350px;
   object-fit: cover;
+  border-radius: 25px 25px 0 0;
 `;
 
 const CardBody = styled(Card.Body)`
