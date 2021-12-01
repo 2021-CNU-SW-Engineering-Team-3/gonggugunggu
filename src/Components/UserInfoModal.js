@@ -3,6 +3,7 @@
  */
 import { useState, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
+import { Card } from 'react-bootstrap';
 
 /*
  * import for image
@@ -22,31 +23,50 @@ import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 const modalAppear = keyframes`
     0% {
       opacity: 0;
-      transform: translateX(100px);
     }
     100% {
       opacity: 1;
-      transform: translateX(0);
     }
 `;
 
-const ModalContainer = styled.div`
+const WhiteBack = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1002;
+  animation: ${(props) =>
+    props.infoToggle
+      ? css`
+          ${modalAppear} 0.4s cubic-bezier(0.77, 0, 0.175, 1) forwards
+        `
+      : ''};
+`;
+
+const ModalContainer = styled(Card)`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  width: 500px;
-  height: 700px;
+  width: 400px;
+  height: 500px;
   background-color: white;
   padding: 40px;
-  z-index: 1003;
   position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0 auto;
+  z-index: 1004;
   border-radius: 20px;
+  border: none;
 
   animation: ${(props) =>
     props.infoToggle
       ? css`
-          ${modalAppear} 0.6s cubic-bezier(0.77, 0, 0.175, 1) forwards
+          ${modalAppear} 0.4s cubic-bezier(0.77, 0, 0.175, 1) forwards
         `
       : ''};
 `;
@@ -189,30 +209,39 @@ const UserInfoModal = ({ infoToggle, setAvataURL, setUserName, userObj, onModalC
   };
 
   return (
-    <ModalContainer infoToggle={infoToggle}>
-      <Infos>
-        <PhotoSelect type='file' accept='image/*' ref={uploadPhotoRef} name='photo' onChange={onImgChange} />
-        <Avata src={selectedImg} onClick={onPhotoClick} />
-        <TextSpace>
-          <Text>이름</Text>
-          <Name
-            name='name'
-            autoComplete='off'
-            placeholder='이름을 입력하세요'
-            value={tempName}
-            onChange={onTextChange}
+    <>
+      <WhiteBack />
+      <ModalContainer infoToggle={infoToggle}>
+        <Infos>
+          <PhotoSelect
+            type='file'
+            accept='image/*'
+            ref={uploadPhotoRef}
+            name='photo'
+            onChange={onImgChange}
           />
-        </TextSpace>
-      </Infos>
-      <Buttons>
-        <Button color='black' name='info' onClick={onButtonClick}>
-          확인
-        </Button>
-        <CancelButton color='black' name='info' onClick={onModalClick}>
-          취소
-        </CancelButton>
-      </Buttons>
-    </ModalContainer>
+          <Avata src={selectedImg} onClick={onPhotoClick} />
+          <TextSpace>
+            <Text>이름</Text>
+            <Name
+              name='name'
+              autoComplete='off'
+              placeholder='이름을 입력하세요'
+              value={tempName}
+              onChange={onTextChange}
+            />
+          </TextSpace>
+        </Infos>
+        <Buttons>
+          <Button color='black' name='info' onClick={onButtonClick}>
+            확인
+          </Button>
+          <CancelButton color='black' name='info' onClick={onModalClick}>
+            취소
+          </CancelButton>
+        </Buttons>
+      </ModalContainer>
+    </>
   );
 };
 
