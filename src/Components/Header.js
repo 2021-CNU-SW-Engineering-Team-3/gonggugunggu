@@ -25,8 +25,12 @@ const Header = styled.header`
   width: 100%;
   height: 70px;
   background-color: #fff;
-  border-bottom: 1px solid #e8e8e8;
   z-index: 1000; //z축 순서 스크롤해도 최상위 유지
+  transition: all ease-out 0.2s;
+
+  &.show {
+    border-bottom: 1px solid #e8e8e8;
+  }
   &.hide {
     transform: translateY(-70px);
     transition: all ease-out 0.2s;
@@ -121,7 +125,7 @@ const throttle = function (callback, waitTime) {
  */
 const MyHeader = ({ isLoggedIn, userObj, userDocObj }) => {
   const navigation = useNavigate();
-
+  const [show, setShow] = useState(false);
   const [hide, setHide] = useState(false);
   const [pageY, setPageY] = useState(0);
   const documentRef = useRef(document);
@@ -129,7 +133,9 @@ const MyHeader = ({ isLoggedIn, userObj, userDocObj }) => {
   const handleScroll = () => {
     const { pageYOffset } = window;
     const deltaY = pageYOffset - pageY;
+    const show = deltaY !== 0;
     const hide = pageYOffset >= 150 && deltaY >= 0;
+    setShow(show);
     setHide(hide);
     setPageY(pageYOffset);
   };
@@ -142,7 +148,7 @@ const MyHeader = ({ isLoggedIn, userObj, userDocObj }) => {
   }, [pageY]);
 
   return (
-    <Header className={hide && 'hide'}>
+    <Header className={show ? (hide ? 'hide' : 'show') : ''}>
       <FlexBox className='inner'>
         <Gnb>
           <HeaderLeft>

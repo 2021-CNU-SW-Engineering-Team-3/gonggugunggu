@@ -15,6 +15,8 @@ const CardContainer = styled(Card)`
   margin-left: 5px;
   margin-right: 5px;
   bottom: 0px;
+  transition: all ease-out 0.2s 0s;
+  color: black;
 
   &:hover {
     bottom: 10px;
