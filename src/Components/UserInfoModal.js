@@ -14,7 +14,6 @@ import { v4 } from 'uuid';
  */
 import { authService, db, storageService } from '../fbase';
 import { updateProfile } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 
 /*

@@ -52,7 +52,7 @@ const Avata = styled.img`
 `;
 
 const DropdownMenu = styled.ul`
-  animation: ${dropdownAppear} 0.6s;
+  animation: ${dropdownAppear} 0.4s;
   display: ${(props) => (props.isActive ? `block` : `none`)};
   position: absolute;
   width: 150px;
