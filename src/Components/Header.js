@@ -30,6 +30,7 @@ const Header = styled.header`
 
   &.show {
     border-bottom: 1px solid #e8e8e8;
+    transition: all ease-out 0s;
   }
   &.hide {
     transform: translateY(-70px);
@@ -133,7 +134,7 @@ const MyHeader = ({ isLoggedIn, userObj, userDocObj }) => {
   const handleScroll = () => {
     const { pageYOffset } = window;
     const deltaY = pageYOffset - pageY;
-    const show = deltaY !== 0;
+    const show = deltaY >= 0;
     const hide = pageYOffset >= 150 && deltaY >= 0;
     setShow(show);
     setHide(hide);
