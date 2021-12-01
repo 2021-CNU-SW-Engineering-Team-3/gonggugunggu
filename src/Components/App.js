@@ -20,6 +20,7 @@ import product0 from '../Images/product0.png';
 import product1 from '../Images/product1.png';
 import product2 from '../Images/product2.png';
 import product3 from '../Images/product3.png';
+import Footer from './Footer';
 
 /*
  * Global function
@@ -116,7 +117,7 @@ const App = () => {
         <>
           <GlobalStyles />
           <AppRouter isLoggedIn={isLoggedIn} userObj={userObj} userDocObj={userDocObj} data={data} />
-          {/* <Footer /> */}
+          <Footer />
         </>
       ) : (
         <MySpinner animation='border' role='status'>
