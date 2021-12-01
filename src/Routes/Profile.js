@@ -149,14 +149,14 @@ const ProfileWrap = styled(Card)`
 `;
 
 const Avata = styled(Card.Img)`
-  width: 300px;
-  height: 300px;
+  width: 250px;
+  height: 250px;
   border-radius: 50%;
   margin-bottom: 30px;
 
   @media only screen and (max-width: 992px) {
-    width: 250px;
-    height: 250px;
+    width: 230px;
+    height: 230px;
   }
   @media only screen and (max-width: 768px) {
     width: 200px;
