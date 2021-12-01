@@ -3,7 +3,7 @@
  */
 import styled from 'styled-components';
 
-import { Card, Button } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 const CardContainer = styled(Card)`
@@ -14,6 +14,13 @@ const CardContainer = styled(Card)`
   margin-bottom: 40px;
   margin-left: 5px;
   margin-right: 5px;
+  bottom: 0px;
+
+  &:hover {
+    bottom: 10px;
+    box-shadow: 5px 10px 40px 10px #e2e2e2;
+    transition: all ease-out 0.2s 0s;
+  }
 
   @media only screen and (max-width: 992px) {
     height: 500px;
