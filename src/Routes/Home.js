@@ -1,10 +1,10 @@
 /*
  * import for react
  */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-import { Container, Row, Col, Carousel } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 
 /*
  * import for firebase
@@ -19,6 +19,55 @@ import ProductCard from '../Components/ProductCard';
 /*
  * Styled Component
  */
+const Header = styled.header`
+  position: fixed;
+  top: 70px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 70px;
+  background-color: #fff;
+  border-bottom: 1px solid #f5f5f5;
+  z-index: -1; //z축 순서 스크롤해도 최상위 유지
+
+  &.show {
+    z-index: 1000;
+    transition: all ease-out 0.4s;
+  }
+  &.move {
+    z-index: 1000;
+    transform: translateY(-70px);
+    transition: all ease-out 0.1s;
+  }
+
+  @media only screen and (max-width: 900px) {
+    width: 900px;
+  }
+`;
+
+const FlexBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Gnb = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  font-weight: 700;
+`;
+
+const Pin = styled.span`
+  font-size: 30px;
+  margin-right: 8px;
+`;
+
+const Text = styled.span`
+  font-size: 25px;
+`;
+
 const CardAppear = keyframes`
     0% {
       opacity: 0;
@@ -99,11 +148,55 @@ const CardContainer = styled(Container)`
   }
 `;
 
+/*
+ * Global Function
+ */
+const throttle = function (callback, waitTime) {
+  let timerId = null;
+  return (e) => {
+    if (timerId) return;
+    timerId = setTimeout(() => {
+      callback.call(this, e);
+      timerId = null;
+    }, waitTime);
+  };
+};
+
 const Home = ({ data }) => {
   const [products, setProducts] = useState(data);
 
+  const [show, setShow] = useState(false);
+  const [move, setMove] = useState(false);
+  const [pageY, setPageY] = useState(0);
+  const documentRef = useRef(document);
+
+  const handleScroll = () => {
+    const { pageYOffset } = window;
+    console.log(pageYOffset);
+    const show = pageYOffset >= 70;
+    const move = pageYOffset >= 100;
+    setShow(show);
+    setMove(move);
+    setPageY(pageYOffset);
+  };
+
+  const throttleScroll = throttle(handleScroll, 50);
+
+  useEffect(() => {
+    documentRef.current.addEventListener('scroll', throttleScroll);
+    return () => documentRef.current.removeEventListener('scroll', throttleScroll);
+  }, [pageY]);
+
   return (
     <>
+      <Header className={show ? (move ? 'move' : 'show') : ''}>
+        <FlexBox className='inner'>
+          <Gnb>
+            <Pin>📌</Pin>
+            <Text>공동구매</Text>
+          </Gnb>
+        </FlexBox>
+      </Header>
       <TitleContainer>
         <Title className='g-4'>📌 공동구매</Title>
         <SubTitle>가장 저렴하게 물건을 구할 수 있는 방법</SubTitle>

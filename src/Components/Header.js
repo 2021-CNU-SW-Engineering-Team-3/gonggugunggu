@@ -1,6 +1,8 @@
 /*
  * import for react
  */
+
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineSearch } from 'react-icons/all';
 import styled from 'styled-components';
@@ -23,7 +25,12 @@ const Header = styled.header`
   width: 100%;
   height: 70px;
   background-color: #fff;
+  border-bottom: 1px solid #f5f5f5;
   z-index: 1000; //z축 순서 스크롤해도 최상위 유지
+  &.hide {
+    transform: translateY(-70px);
+    transition: all ease-out 0.2s;
+  }
 
   @media only screen and (max-width: 900px) {
     width: 900px;
@@ -96,13 +103,46 @@ const Text = styled.div`
 `;
 
 /*
+ * Global Function
+ */
+const throttle = function (callback, waitTime) {
+  let timerId = null;
+  return (e) => {
+    if (timerId) return;
+    timerId = setTimeout(() => {
+      callback.call(this, e);
+      timerId = null;
+    }, waitTime);
+  };
+};
+
+/*
  * MyHeader Component
  */
 const MyHeader = ({ isLoggedIn, userObj, userDocObj }) => {
   const navigation = useNavigate();
 
+  const [hide, setHide] = useState(false);
+  const [pageY, setPageY] = useState(0);
+  const documentRef = useRef(document);
+
+  const handleScroll = () => {
+    const { pageYOffset } = window;
+    const deltaY = pageYOffset - pageY;
+    const hide = pageYOffset >= 100 && deltaY >= 0;
+    setHide(hide);
+    setPageY(pageYOffset);
+  };
+
+  const throttleScroll = throttle(handleScroll, 50);
+
+  useEffect(() => {
+    documentRef.current.addEventListener('scroll', throttleScroll);
+    return () => documentRef.current.removeEventListener('scroll', throttleScroll);
+  }, [pageY]);
+
   return (
-    <Header>
+    <Header className={hide && 'hide'}>
       <FlexBox className='inner'>
         <Gnb>
           <HeaderLeft>
