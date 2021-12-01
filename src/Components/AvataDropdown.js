@@ -39,7 +39,6 @@ const dropdownAppear = keyframes`
 `;
 const DropdownContainer = styled.div`
   position: relative;
-
   &:hover {
     cursor: pointer;
   }

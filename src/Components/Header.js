@@ -23,7 +23,7 @@ const Header = styled.header`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 70px;
+  height: 80px;
   background-color: #fff;
   z-index: 1000; //z축 순서 스크롤해도 최상위 유지
   transition: all ease-out 0.2s;
@@ -33,7 +33,7 @@ const Header = styled.header`
     transition: all ease-out 0s;
   }
   &.hide {
-    transform: translateY(-70px);
+    transform: translateY(-80px);
     transition: all ease-out 0.2s;
   }
 
@@ -134,8 +134,8 @@ const MyHeader = ({ isLoggedIn, userObj, userDocObj }) => {
   const handleScroll = () => {
     const { pageYOffset } = window;
     const deltaY = pageYOffset - pageY;
-    const show = deltaY >= 0;
-    const hide = pageYOffset >= 150 && deltaY >= 0;
+    const show = pageYOffset !== 0;
+    const hide = pageYOffset >= 200 && deltaY >= 0;
     setShow(show);
     setHide(hide);
     setPageY(pageYOffset);
