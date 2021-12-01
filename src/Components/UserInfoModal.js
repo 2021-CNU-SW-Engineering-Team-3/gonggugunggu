@@ -134,40 +134,24 @@ const UserInfoModal = ({ infoToggle, setAvataURL, setUserName, userObj, onModalC
 
   const onButtonClick = async (e) => {
     try {
-      console.log(userObj.uid);
-      console.log(selectedImg);
-
+      let fileURL = '';
       if (selectedImg !== userObj.photoURL) {
         const fileRef = ref(storageService, `${userObj.uid}/${v4()}`);
         const res = await uploadString(fileRef, selectedImg, 'data_url');
-        const fileURL = await getDownloadURL(res.ref);
-
-        updateProfile(authService.currentUser, { photoURL: fileURL })
-          .then(() => {
-            setAvataURL(fileURL);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        fileURL = await getDownloadURL(res.ref);
+      } else {
+        fileURL = userObj.photoURL;
       }
 
-      updateProfile(authService.currentUser, { displayName: tempName })
+      updateProfile(authService.currentUser, { photoURL: fileURL, displayName: tempName })
         .then(() => {
-          console.log('displayName update');
+          console.log('user update');
           setUserName(tempName);
+          setAvataURL(fileURL);
         })
         .catch((error) => {
           console.log(error);
         });
-
-      await setDoc(
-        doc(db, 'users', authService.currentUser.uid),
-        {
-          name: tempName,
-          photoURL: selectedImg,
-        },
-        { merge: true },
-      );
 
       onModalClick(e);
     } catch (error) {
@@ -206,41 +190,30 @@ const UserInfoModal = ({ infoToggle, setAvataURL, setUserName, userObj, onModalC
   };
 
   return (
-    <>
-      {/* <Background onClick={onModalClick} name='info' /> */}
-      <ModalContainer infoToggle={infoToggle}>
-        <Infos>
-          {/* <Title>정보 수정</Title> */}
-
-          <PhotoSelect
-            type='file'
-            accept='image/*'
-            ref={uploadPhotoRef}
-            name='photo'
-            onChange={onImgChange}
+    <ModalContainer infoToggle={infoToggle}>
+      <Infos>
+        <PhotoSelect type='file' accept='image/*' ref={uploadPhotoRef} name='photo' onChange={onImgChange} />
+        <Avata src={selectedImg} onClick={onPhotoClick} />
+        <TextSpace>
+          <Text>이름</Text>
+          <Name
+            name='name'
+            autoComplete='off'
+            placeholder='이름을 입력하세요'
+            value={tempName}
+            onChange={onTextChange}
           />
-          <Avata src={selectedImg} onClick={onPhotoClick} />
-          <TextSpace>
-            <Text>이름</Text>
-            <Name
-              name='name'
-              autoComplete='off'
-              placeholder='이름을 입력하세요'
-              value={tempName}
-              onChange={onTextChange}
-            />
-          </TextSpace>
-        </Infos>
-        <Buttons>
-          <Button color='black' name='info' onClick={onButtonClick}>
-            확인
-          </Button>
-          <CancelButton color='black' name='info' onClick={onModalClick}>
-            취소
-          </CancelButton>
-        </Buttons>
-      </ModalContainer>
-    </>
+        </TextSpace>
+      </Infos>
+      <Buttons>
+        <Button color='black' name='info' onClick={onButtonClick}>
+          확인
+        </Button>
+        <CancelButton color='black' name='info' onClick={onModalClick}>
+          취소
+        </CancelButton>
+      </Buttons>
+    </ModalContainer>
   );
 };
 

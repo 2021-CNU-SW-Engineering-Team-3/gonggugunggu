@@ -137,7 +137,6 @@ const Register = () => {
           await setDoc(doc(db, 'users', userCredential.user.uid), {
             id: userCredential.user.uid,
             email: userCredential.user.email,
-            name: name,
             role: 'user',
             totalRate: 0,
             evaluateCount: 0,
