@@ -33,12 +33,12 @@ const Header = styled.header`
 
   &.show {
     z-index: 1000;
-    transition: all ease-out 0.4s;
+    transition: all ease-out 0.2s;
   }
   &.move {
     z-index: 1000;
     transform: translateY(-70px);
-    transition: all ease-out 0.1s;
+    transition: all ease-out 0.2s;
   }
 
   @media only screen and (max-width: 900px) {
@@ -174,7 +174,7 @@ const Home = ({ data }) => {
     const { pageYOffset } = window;
     console.log(pageYOffset);
     const show = pageYOffset >= 70;
-    const move = pageYOffset >= 100;
+    const move = pageYOffset >= 150;
     setShow(show);
     setMove(move);
     setPageY(pageYOffset);
