@@ -31,17 +31,17 @@ const Header = styled.header`
   height: 70px;
   background-color: #fff;
   border-bottom: 1px solid #e8e8e8;
-  z-index: -1; //z축 순서 스크롤해도 최상위 유지
-  transition: all ease-out 0.2s;
-  opacity: 0;
+  z-index: -1;
+  transition: all ease-out 0s;
+  /* opacity: 0; */
 
   &.show {
-    z-index: 1000;
+    z-index: 999;
     opacity: 1;
     transition: all ease-out 0.2s;
   }
   &.move {
-    z-index: 1000;
+    z-index: 999;
     opacity: 1;
     transform: translateY(-70px);
     transition: all ease-out 0.2s;
@@ -71,7 +71,7 @@ const Pin = styled.span`
 `;
 
 const Text = styled.span`
-  font-size: 25px;
+  font-size: 20px;
 `;
 const TitleAppear = keyframes`
     0% {
@@ -247,9 +247,9 @@ const Profile = ({ userObj, userDocObj }) => {
 
   const handleScroll = () => {
     const { pageYOffset } = window;
-    console.log(pageYOffset);
-    const show = pageYOffset >= 100;
-    const move = pageYOffset >= 120;
+    const deltaY = pageYOffset - pageY;
+    const show = pageYOffset >= 170;
+    const move = pageYOffset >= 190 && deltaY >= 0;
     setShow(show);
     setMove(move);
     setPageY(pageYOffset);

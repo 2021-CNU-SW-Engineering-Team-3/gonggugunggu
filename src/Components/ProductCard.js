@@ -2,7 +2,6 @@
  * import for react
  */
 import styled from 'styled-components';
-
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 

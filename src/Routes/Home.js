@@ -29,17 +29,17 @@ const Header = styled.header`
   height: 70px;
   background-color: #fff;
   border-bottom: 1px solid #e8e8e8;
-  z-index: -1; //z축 순서 스크롤해도 최상위 유지
-  transition: all ease-out 0.2s;
-  opacity: 0;
+  z-index: -1;
+  transition: all ease-out 0s;
+  /* opacity: 0; */
 
   &.show {
-    z-index: 1000;
+    z-index: 999;
     opacity: 1;
     transition: all ease-out 0.2s;
   }
   &.move {
-    z-index: 1000;
+    z-index: 999;
     opacity: 1;
     transform: translateY(-70px);
     transition: all ease-out 0.2s;
@@ -69,7 +69,7 @@ const Pin = styled.span`
 `;
 
 const Text = styled.span`
-  font-size: 25px;
+  font-size: 20px;
 `;
 
 const CardAppear = keyframes`
@@ -93,7 +93,11 @@ const TitleAppear = keyframes`
 `;
 
 const TitleContainer = styled(Container)`
+  display: flex;
+  flex-direction: row;
   margin-top: 120px;
+  justify-content: space-between;
+  align-items: flex-end;
   animation: ${TitleAppear} 0.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
 
   @media only screen and (max-width: 992px) {
@@ -139,6 +143,27 @@ const SubTitle = styled.div`
   }
 `;
 
+const PostingButton = styled.button`
+  background-color: #ededed;
+  font-size: 16px;
+  font-weight: 700;
+  width: 140px;
+  height: 45px;
+  margin-bottom: 50px;
+  border-radius: 25px;
+  transition: all ease-out 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+    transition: all ease-out 0.2s;
+  }
+  &:focus {
+    opacity: 1;
+    background-color: lightgray;
+    transition: all ease-out 0.2s;
+  }
+`;
+
 const CardContainer = styled(Container)`
   margin-top: 100px;
   animation: ${CardAppear} 0.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
@@ -176,9 +201,9 @@ const Home = ({ data }) => {
 
   const handleScroll = () => {
     const { pageYOffset } = window;
-    console.log(pageYOffset);
-    const show = pageYOffset >= 100;
-    const move = pageYOffset >= 120;
+    const deltaY = pageYOffset - pageY;
+    const show = pageYOffset >= 170;
+    const move = pageYOffset >= 190 && deltaY >= 0;
     setShow(show);
     setMove(move);
     setPageY(pageYOffset);
@@ -202,8 +227,12 @@ const Home = ({ data }) => {
         </FlexBox>
       </Header>
       <TitleContainer>
-        <Title className='g-4'>📌 공동구매</Title>
-        <SubTitle>가장 저렴하게 물건을 구할 수 있는 방법</SubTitle>
+        <div>
+          <Title className='g-4'>📌 공동구매</Title>
+          <SubTitle>가장 저렴하게 물건을 구할 수 있는 방법</SubTitle>
+        </div>
+
+        <PostingButton>게시글 작성</PostingButton>
       </TitleContainer>
       <CardContainer>
         <Row xs={1} sm={1} md={2} lg={3} className='g-4'>
