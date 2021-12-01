@@ -37,7 +37,7 @@ const Footer = () => {
           <a href='https://github.com/jeonbyeongmin'>
             <BsGithub />
           </a>
-          <a href='https://qudals7613@gmail.com'>
+          <a>
             <MdEmail />
           </a>
         </Icons>
