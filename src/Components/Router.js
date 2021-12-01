@@ -12,6 +12,7 @@ import Auth from '../Routes/Auth';
 import Register from '../Routes/Register';
 import Profile from '../Routes/Profile';
 import Detail from '../Routes/Detail';
+import FriendsList from '../Routes/FriendsList';
 
 /*
  * AppRouter Component
@@ -26,6 +27,7 @@ const AppRouter = ({ isLoggedIn, userObj, userDocObj, data }) => {
           <Route path='/auth' element={<Auth />} />
           <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<Profile userObj={userObj} userDocObj={userDocObj} />} />
+          <Route path='/friendsList' element={<FriendsList userObj={userObj} userDocObj={userDocObj} />} />
           <Route path='/detail/:id' element={<Detail data={data} />} />
         </Routes>
       </main>
