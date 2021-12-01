@@ -17,7 +17,7 @@ const userDropdownItems = [
   { id: 1, name: '내 정보', path: '/profile' },
   { id: 2, name: '참여목록', path: '/partList' },
   { id: 3, name: '내가 쓴 글', path: '/myPost' },
-  { id: 4, name: '내 거래친구', path: '/myFriend' },
+  { id: 4, name: '내 거래친구', path: '/friendsList' },
 ];
 
 const adminDropdownItems = [
