@@ -77,6 +77,9 @@ const data = [
   },
 ];
 
+/*
+ * Styled Component
+ */
 const MySpinner = styled(Spinner)`
   position: fixed;
   left: 48%;
@@ -98,11 +101,15 @@ const App = () => {
         fetchUser()
           .then((user) => {
             setUserDocObj(user);
+            console.log(user);
           })
           .catch((error) => {
             console.log(error);
           });
+
         setUserObj(user);
+        console.log(user);
+
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);

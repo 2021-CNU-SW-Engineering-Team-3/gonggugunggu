@@ -217,7 +217,7 @@ const Home = ({ data }) => {
     const { pageYOffset } = window;
     const deltaY = pageYOffset - pageY;
     const show = pageYOffset >= 170;
-    const move = pageYOffset >= 190 && deltaY >= 0;
+    const move = pageYOffset >= 200 && deltaY >= 0;
     setShow(show);
     setMove(move);
     setPageY(pageYOffset);
