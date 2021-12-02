@@ -77,6 +77,9 @@ const data = [
   },
 ];
 
+/*
+ * Styled Component
+ */
 const MySpinner = styled(Spinner)`
   position: fixed;
   left: 48%;
@@ -102,6 +105,7 @@ const App = () => {
           .catch((error) => {
             console.log(error);
           });
+
         setUserObj(user);
         setIsLoggedIn(true);
       } else {

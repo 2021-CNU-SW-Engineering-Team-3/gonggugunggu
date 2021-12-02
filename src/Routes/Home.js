@@ -2,14 +2,14 @@
  * import for react
  */
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-
 import { Container, Row, Col } from 'react-bootstrap';
 
 /*
  * import for firebase
  */
-// import { authService } from '../fbase';
+import { authService } from '../fbase';
 
 /*
  * import for Component
@@ -17,61 +17,8 @@ import { Container, Row, Col } from 'react-bootstrap';
 import ProductCard from '../Components/ProductCard';
 
 /*
- * Styled Component
+ * Keyframes
  */
-const Header = styled.header`
-  position: fixed;
-  top: 70px;
-  left: 0;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 70px;
-  background-color: #fff;
-  border-bottom: 1px solid #e8e8e8;
-  z-index: -1;
-  transition: all ease-out 0s;
-  /* opacity: 0; */
-
-  &.show {
-    z-index: 999;
-    opacity: 1;
-    transition: all ease-out 0.2s;
-  }
-  &.move {
-    z-index: 999;
-    opacity: 1;
-    transform: translateY(-70px);
-    transition: all ease-out 0.2s;
-  }
-
-  @media only screen and (max-width: 900px) {
-    width: 900px;
-  }
-`;
-
-const FlexBox = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const Gnb = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-
-  font-weight: 700;
-`;
-
-const Pin = styled.span`
-  font-size: 30px;
-  margin-right: 8px;
-`;
-
-const Text = styled.span`
-  font-size: 20px;
-`;
-
 const CardAppear = keyframes`
     0% {
       opacity: 0;
@@ -90,6 +37,58 @@ const TitleAppear = keyframes`
       opacity: 1;
       transform: translateX(0);
     }
+`;
+
+/*
+ * Styled Component
+ */
+const Header = styled.header`
+  position: fixed;
+  top: 70px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 70px;
+  background-color: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  z-index: -1;
+  transition: all ease-out 0s;
+
+  &.show {
+    z-index: 999;
+    transition: all ease-out 0.2s;
+  }
+  &.move {
+    z-index: 999;
+    transform: translateY(-70px);
+    transition: all ease-out 0.2s;
+  }
+
+  @media only screen and (max-width: 900px) {
+    width: 900px;
+  }
+`;
+
+const FlexBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Gnb = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font-weight: 700;
+`;
+
+const Pin = styled.span`
+  font-size: 30px;
+  margin-right: 8px;
+`;
+
+const Text = styled.span`
+  font-size: 20px;
 `;
 
 const TitleContainer = styled(Container)`
@@ -150,6 +149,7 @@ const PostingButton = styled.button`
   width: 140px;
   height: 45px;
   margin-bottom: 50px;
+  margin-right: 50px;
   border-radius: 25px;
   transition: all ease-out 0.2s;
 
@@ -161,6 +161,18 @@ const PostingButton = styled.button`
     opacity: 1;
     background-color: lightgray;
     transition: all ease-out 0.2s;
+  }
+
+  @media only screen and (max-width: 992px) {
+    font-size: 15px;
+    font-weight: 600;
+    margin-left: 20px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 0px;
   }
 `;
 
@@ -191,19 +203,24 @@ const throttle = function (callback, waitTime) {
   };
 };
 
+/*
+ * Home Component
+ */
 const Home = ({ data }) => {
-  const [products, setProducts] = useState(data);
+  const navigation = useNavigate();
 
+  const [products, setProducts] = useState(data);
   const [show, setShow] = useState(false);
   const [move, setMove] = useState(false);
   const [pageY, setPageY] = useState(0);
   const documentRef = useRef(document);
 
+  // Scroll Event
   const handleScroll = () => {
     const { pageYOffset } = window;
     const deltaY = pageYOffset - pageY;
     const show = pageYOffset >= 170;
-    const move = pageYOffset >= 190 && deltaY >= 0;
+    const move = pageYOffset >= 200 && deltaY >= 0;
     setShow(show);
     setMove(move);
     setPageY(pageYOffset);
@@ -215,6 +232,18 @@ const Home = ({ data }) => {
     documentRef.current.addEventListener('scroll', throttleScroll);
     return () => documentRef.current.removeEventListener('scroll', throttleScroll);
   }, [pageY]);
+
+  // Click Event
+  const handlePostingClick = () => {
+    const user = authService.currentUser;
+    if (user.emailVerified === true) {
+      navigation('/posting');
+    } else {
+      alert('이메일 인증된 회원만 이용할 수 있습니다');
+    }
+    // TODO: develop code
+    navigation('/posting');
+  };
 
   return (
     <>
@@ -232,14 +261,14 @@ const Home = ({ data }) => {
           <SubTitle>가장 저렴하게 물건을 구할 수 있는 방법</SubTitle>
         </div>
 
-        <PostingButton>게시글 작성</PostingButton>
+        <PostingButton onClick={handlePostingClick}>게시글 작성</PostingButton>
       </TitleContainer>
       <CardContainer>
         <Row xs={1} sm={1} md={2} lg={3} className='g-4'>
           {products.map((_, index) => {
             return (
-              <Col>
-                <ProductCard key={index} product={products[index]} />
+              <Col key={index}>
+                <ProductCard product={products[index]} />
               </Col>
             );
           })}

@@ -16,6 +16,7 @@ import { v4 } from 'uuid';
 import { authService, db, storageService } from '../fbase';
 import { updateProfile } from 'firebase/auth';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
+import { doc, setDoc } from 'firebase/firestore';
 
 /*
  * Styled Component
@@ -171,6 +172,15 @@ const UserInfoModal = ({ infoToggle, setAvataURL, setUserName, userObj, onModalC
         .catch((error) => {
           console.log(error);
         });
+
+      await setDoc(
+        doc(db, 'users', authService.currentUser.uid),
+        {
+          name: tempName,
+          photoURL: fileURL,
+        },
+        { merge: true },
+      );
 
       onModalClick(e);
     } catch (error) {
