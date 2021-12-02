@@ -286,6 +286,7 @@ const Posting = () => {
           photoURL: fileURL,
           totalPartNum: totalPartNum,
           currentPartNum: 0,
+          currentPartUser: [],
           totalPrice: totalPrice,
           liked: 0,
           createdAt: serverTimestamp(),
