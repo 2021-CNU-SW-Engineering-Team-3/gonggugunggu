@@ -2,6 +2,7 @@
  * import for react
  */
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { Container, Row, Col } from 'react-bootstrap';
 
@@ -206,13 +207,15 @@ const throttle = function (callback, waitTime) {
  * Home Component
  */
 const Home = ({ data }) => {
-  const [products, setProducts] = useState(data);
+  const navigation = useNavigate();
 
+  const [products, setProducts] = useState(data);
   const [show, setShow] = useState(false);
   const [move, setMove] = useState(false);
   const [pageY, setPageY] = useState(0);
   const documentRef = useRef(document);
 
+  // Scroll Event
   const handleScroll = () => {
     const { pageYOffset } = window;
     const deltaY = pageYOffset - pageY;
@@ -230,6 +233,18 @@ const Home = ({ data }) => {
     return () => documentRef.current.removeEventListener('scroll', throttleScroll);
   }, [pageY]);
 
+  // Click Event
+  const handlePostingClick = () => {
+    const user = authService.currentUser;
+    if (user.emailVerified === true) {
+      navigation('/posting');
+    } else {
+      alert('이메일 인증된 회원만 이용할 수 있습니다');
+    }
+    // TODO: develop code
+    navigation('/posting');
+  };
+
   return (
     <>
       <Header className={show ? (move ? 'move' : 'show') : ''}>
@@ -246,14 +261,14 @@ const Home = ({ data }) => {
           <SubTitle>가장 저렴하게 물건을 구할 수 있는 방법</SubTitle>
         </div>
 
-        <PostingButton>게시글 작성</PostingButton>
+        <PostingButton onClick={handlePostingClick}>게시글 작성</PostingButton>
       </TitleContainer>
       <CardContainer>
         <Row xs={1} sm={1} md={2} lg={3} className='g-4'>
           {products.map((_, index) => {
             return (
-              <Col>
-                <ProductCard key={index} product={products[index]} />
+              <Col key={index}>
+                <ProductCard product={products[index]} />
               </Col>
             );
           })}

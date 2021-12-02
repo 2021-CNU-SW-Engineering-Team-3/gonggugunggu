@@ -101,15 +101,12 @@ const App = () => {
         fetchUser()
           .then((user) => {
             setUserDocObj(user);
-            console.log(user);
           })
           .catch((error) => {
             console.log(error);
           });
 
         setUserObj(user);
-        console.log(user);
-
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);

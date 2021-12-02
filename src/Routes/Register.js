@@ -130,13 +130,13 @@ const Button = styled.input`
  * Register Component
  */
 const Register = () => {
+  const uploadPhotoRef = useRef();
+
   const [selectedImg, setSelectedImg] = useState(unknown);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  const uploadPhotoRef = useRef();
 
   const onSignClick = (e) => {
     e.preventDefault();

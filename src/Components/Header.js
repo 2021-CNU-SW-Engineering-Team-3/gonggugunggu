@@ -1,7 +1,6 @@
 /*
  * import for react
  */
-
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineSearch } from 'react-icons/all';
@@ -16,6 +15,7 @@ import logo from '../Images/gonggugunggu.png';
 /*
  * Styled Component
  */
+
 const Header = styled.header`
   position: fixed;
   top: 0;
