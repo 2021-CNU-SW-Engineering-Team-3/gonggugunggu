@@ -1,9 +1,16 @@
 /*
  * import for react
  */
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Container, Card, Row, Col } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import styled, { keyframes } from 'styled-components';
+
+/*
+ * import for firebase
+ */
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../fbase';
 
 import unknown from '../Images/Unknown_person.jpeg';
 
@@ -118,34 +125,67 @@ const PartiButton = styled.button`
   margin-bottom: 40px;
 `;
 
+const MySpinner = styled(Spinner)`
+  position: fixed;
+  left: 48%;
+  top: 48%;
+`;
+
 const Detail = ({ data }) => {
   let { id } = useParams();
-  let findProduct = data.find((item) => {
-    return Number(item.id) === Number(id);
-  });
+  const [postUser, setPostUser] = useState();
+  const [post, setPost] = useState();
+
+  useEffect(() => {
+    if (data !== undefined) {
+      const findPost = data.find((item) => {
+        return item.postid === id;
+      });
+      setPost(findPost);
+    }
+  }, [data, id]);
+
+  const getUser = useCallback(async () => {
+    if (post !== undefined) {
+      const docRef = doc(db, 'users', post.uid);
+      const docSnap = await getDoc(docRef);
+      setPostUser(docSnap.data());
+    }
+  }, [post]);
+
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
 
   return (
-    <DetailContainer>
-      <PhotoContainer>
-        <Photo src={findProduct.photoURL} alt='product' width='100%' />
-      </PhotoContainer>
+    <div>
+      {post && postUser ? (
+        <DetailContainer>
+          <PhotoContainer>
+            <Photo src={post.photoURL} alt='product' width='100%' />
+          </PhotoContainer>
 
-      <UserContainer>
-        <UserLeft>
-          <Avata src={unknown} />
-          <UserName>홍길동</UserName>
-        </UserLeft>
-        <Rate>백마지수 35</Rate>
-      </UserContainer>
+          <UserContainer>
+            <UserLeft>
+              <Avata src={postUser.photoURL} />
+              <UserName>{postUser.name}</UserName>
+            </UserLeft>
+            <Rate>백마지수 {postUser.rate}</Rate>
+          </UserContainer>
 
-      <BodyContainer>
-        <Title>{findProduct.title}</Title>
-        <Price>{findProduct.totalPrice}원</Price>
-        <Description>{findProduct.content}</Description>
-      </BodyContainer>
+          <BodyContainer>
+            <Title>{post.title}</Title>
+            <Price>{post.totalPrice}원</Price>
+          </BodyContainer>
 
-      <PartiButton>공동구매 참여</PartiButton>
-    </DetailContainer>
+          <PartiButton>공동구매 참여</PartiButton>
+        </DetailContainer>
+      ) : (
+        <MySpinner animation='border' role='status'>
+          <span className='visually-hidden'>Loading...</span>
+        </MySpinner>
+      )}
+    </div>
   );
 };
 

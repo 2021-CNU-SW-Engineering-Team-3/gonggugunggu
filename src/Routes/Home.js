@@ -209,7 +209,6 @@ const throttle = function (callback, waitTime) {
 const Home = ({ data }) => {
   const navigation = useNavigate();
 
-  const [products, setProducts] = useState(data);
   const [show, setShow] = useState(false);
   const [move, setMove] = useState(false);
   const [pageY, setPageY] = useState(0);
@@ -231,7 +230,7 @@ const Home = ({ data }) => {
   useEffect(() => {
     documentRef.current.addEventListener('scroll', throttleScroll);
     return () => documentRef.current.removeEventListener('scroll', throttleScroll);
-  }, [pageY]);
+  }, [pageY, throttleScroll]);
 
   // Click Event
   const handlePostingClick = () => {
@@ -265,13 +264,14 @@ const Home = ({ data }) => {
       </TitleContainer>
       <CardContainer>
         <Row xs={1} sm={1} md={2} lg={3} className='g-4'>
-          {products.map((_, index) => {
-            return (
-              <Col key={index}>
-                <ProductCard product={products[index]} />
-              </Col>
-            );
-          })}
+          {data &&
+            data.map((_, index) => {
+              return (
+                <Col key={index}>
+                  <ProductCard product={data[index]} />
+                </Col>
+              );
+            })}
         </Row>
       </CardContainer>
     </>
