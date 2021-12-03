@@ -3,7 +3,7 @@
  */
 import AppRouter from './Router';
 import GlobalStyles from './GlobalStyles';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { Spinner } from 'react-bootstrap';
 
@@ -11,7 +11,7 @@ import { Spinner } from 'react-bootstrap';
  * import for firebase
  */
 import { authService, db } from '../fbase';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 
 /*
  * import for image
@@ -36,7 +36,7 @@ const fetchUser = async () => {
  */
 const data = [
   {
-    uid: "2RyC7rUv5qTIXIavghRpfpSHt6m1",
+    uid: '2RyC7rUv5qTIXIavghRpfpSHt6m1',
     id: 0,
     photoURL: product0,
     title: '콜라 공동구매',
@@ -47,7 +47,7 @@ const data = [
     totalPart: 10,
   },
   {
-    uid: "2RyC7rUv5qTIXIavghRpfpSHt6m1",
+    uid: '2RyC7rUv5qTIXIavghRpfpSHt6m1',
     id: 1,
     photoURL: product1,
     title: '게토레이 공동구매',
@@ -58,7 +58,7 @@ const data = [
     totalPart: 10,
   },
   {
-    uid: "asdasd",
+    uid: 'asdasd',
     id: 2,
     photoURL: product2,
     title: '과자 공동구매',
@@ -69,7 +69,7 @@ const data = [
     totalPart: 10,
   },
   {
-    uid: "12asdzxc",
+    uid: '12asdzxc',
     id: 3,
     photoURL: product3,
     title: '음료수 공동구매',
@@ -98,6 +98,16 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userObj, setUserObj] = useState();
   const [userDocObj, setUserDocObj] = useState({});
+  const [posts, setPosts] = useState();
+
+  const fetchPosts = useCallback(async () => {
+    const temp = [];
+    const querySnapshot = await getDocs(collection(db, 'posts'));
+    querySnapshot.forEach((doc) => {
+      temp.push(doc.data());
+    });
+    setPosts(temp);
+  }, []);
 
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
@@ -119,12 +129,16 @@ const App = () => {
     });
   }, []);
 
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+
   return (
     <div>
       {init ? (
         <>
           <GlobalStyles />
-          <AppRouter isLoggedIn={isLoggedIn} userObj={userObj} userDocObj={userDocObj} data={data} />
+          <AppRouter isLoggedIn={isLoggedIn} userObj={userObj} userDocObj={userDocObj} data={posts} />
           <Footer />
         </>
       ) : (

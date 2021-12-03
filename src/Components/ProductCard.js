@@ -79,7 +79,7 @@ const RowFlex = styled.div`
 
 const ProductCard = ({ product }) => {
   return (
-    <Link to={`/detail/${product.id}`}>
+    <Link to={`/detail/${product.postid}`}>
       <CardContainer>
         <CardImage variant='top' src={product.photoURL} />
         <CardBody>
