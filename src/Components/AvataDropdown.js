@@ -114,7 +114,7 @@ const AvataDropdown = ({ userObj, userDocObj }) => {
     <DropdownContainer>
       <Avata onClick={onActiveToggle} src={userObj.photoURL} />
       <DropdownMenu isActive={isActive}>
-        {userDocObj.role === 'user'
+        {userObj.role === 'user'
           ? userDropdownItems.map((item) => (
               <Link to={item.path} key={item.id}>
                 <DropdownItemContainer onClick={onSelectItem}>

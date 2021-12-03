@@ -16,6 +16,8 @@ import FriendsList from '../Routes/FriendsList';
 import Posting from '../Routes/Posting';
 import MyPost from '../Routes/MyPost';
 import PartList from '../Routes/PartList';
+import UserList from '../Routes/UserList';
+import UserDetail from '../Routes/UserDetail';
 
 /*
  * AppRouter Component
@@ -35,7 +37,8 @@ const AppRouter = ({ isLoggedIn, userObj, userDocObj, data }) => {
           <Route path='/detail/:id' element={<Detail data={data} />} />
           <Route path='/myPost' element={<MyPost data={data} userObj={userObj} userDocObj={userDocObj}/>} />
           <Route path='/partList' element={<PartList isLoggedIn={isLoggedIn} userObj={userObj} userDocObj={userDocObj} data={data} />} />
-          
+          <Route path='/userList' element={<UserList />} />
+          <Route path='/userDetail/:id' element={<UserDetail />} />
         </Routes>
       </main>
     </Router>
