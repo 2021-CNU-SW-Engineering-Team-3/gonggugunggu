@@ -9,8 +9,8 @@ import styled, { keyframes } from 'styled-components';
 /*
  * import for firebase
  */
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../fbase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { authService, db } from '../fbase';
 
 import unknown from '../Images/Unknown_person.jpeg';
 
@@ -99,10 +99,6 @@ const Price = styled.div`
   font-weight: 700;
 `;
 
-const Description = styled.div`
-  margin-bottom: 40px;
-`;
-
 const PartiButton = styled.button`
   background-color: #ededed;
   font-size: 16px;
@@ -131,13 +127,15 @@ const MySpinner = styled(Spinner)`
   top: 48%;
 `;
 
-const Detail = ({ data }) => {
+const Detail = ({ fetchPosts, data }) => {
   let { id } = useParams();
+  const navigation = useNavigate();
   const [postUser, setPostUser] = useState();
   const [post, setPost] = useState();
+  const user = authService.currentUser;
 
-  useEffect(() => {
-    if (data !== undefined) {
+  const getPost = useCallback(async () => {
+    if (data) {
       const findPost = data.find((item) => {
         return item.postid === id;
       });
@@ -146,7 +144,7 @@ const Detail = ({ data }) => {
   }, [data, id]);
 
   const getUser = useCallback(async () => {
-    if (post !== undefined) {
+    if (post) {
       const docRef = doc(db, 'users', post.uid);
       const docSnap = await getDoc(docRef);
       setPostUser(docSnap.data());
@@ -154,8 +152,40 @@ const Detail = ({ data }) => {
   }, [post]);
 
   useEffect(() => {
+    getPost();
+  }, [getPost]);
+
+  useEffect(() => {
     getUser();
   }, [getUser]);
+
+  const handleClick = async () => {
+    const findUser = post.currentPartUser.find((item) => {
+      return item === user.uid;
+    });
+
+    if (post.currentPartNum < post.totalPartNum) {
+      if (!findUser) {
+        await setDoc(
+          doc(db, 'posts', post.postid),
+          {
+            currentPartNum: post.currentPartNum + 1,
+            currentPartUser: [...post.currentPartUser, user.uid],
+          },
+          { merge: true },
+        );
+        alert('완료');
+        fetchPosts();
+        console.log('완료');
+      } else {
+        alert('이미 참여 중 입니다.');
+        console.log('참여 중');
+      }
+    } else {
+      alert('모집이 끝났습니다.');
+      console.log('모집 끝');
+    }
+  };
 
   return (
     <div>
@@ -175,10 +205,14 @@ const Detail = ({ data }) => {
 
           <BodyContainer>
             <Title>{post.title}</Title>
-            <Price>{post.totalPrice}원</Price>
+            <Price>참여비용 {post.totalPrice / post.totalPartNum}원</Price>
+            <Title>♡{post.liked}</Title>
+            <Title>
+              현재 참여 인원 {post.currentPartNum}/{post.totalPartNum}
+            </Title>
           </BodyContainer>
 
-          <PartiButton>공동구매 참여</PartiButton>
+          <PartiButton onClick={handleClick}>공동구매 참여</PartiButton>
         </DetailContainer>
       ) : (
         <MySpinner animation='border' role='status'>

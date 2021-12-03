@@ -20,7 +20,7 @@ import PartList from '../Routes/PartList';
 /*
  * AppRouter Component
  */
-const AppRouter = ({ isLoggedIn, userObj, userDocObj, data }) => {
+const AppRouter = ({ isLoggedIn, userObj, userDocObj, fetchPosts, data }) => {
   return (
     <Router>
       <MyHeader isLoggedIn={isLoggedIn} userObj={userObj} userDocObj={userDocObj} />
@@ -31,8 +31,8 @@ const AppRouter = ({ isLoggedIn, userObj, userDocObj, data }) => {
           <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<Profile userObj={userObj} userDocObj={userDocObj} />} />
           <Route path='/friendsList' element={<FriendsList userObj={userObj} userDocObj={userDocObj} />} />
-          <Route path='/posting' element={<Posting />} />
-          <Route path='/detail/:id' element={<Detail data={data} />} />
+          <Route path='/posting' element={<Posting fetchPosts={fetchPosts} />} />
+          <Route path='/detail/:id' element={<Detail fetchPosts={fetchPosts} data={data} />} />
           <Route path='/myPost' element={<MyPost data={data} userObj={userObj} userDocObj={userDocObj} />} />
           <Route
             path='/partList'
