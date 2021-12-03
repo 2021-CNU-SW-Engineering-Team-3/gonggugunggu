@@ -187,9 +187,7 @@ const MyPost = ({ data, userObj, userDocObj}) => {
   const documentRef = useRef(document);
 
   function isMyPost(element){
-    console.log(userDocObj.id);
     if (userDocObj.id == element.uid){
-      console.log('asdasd');
       return true;
     }
   }
