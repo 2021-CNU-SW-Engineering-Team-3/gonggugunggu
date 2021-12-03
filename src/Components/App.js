@@ -138,7 +138,13 @@ const App = () => {
       {init ? (
         <>
           <GlobalStyles />
-          <AppRouter isLoggedIn={isLoggedIn} userObj={userObj} userDocObj={userDocObj} data={posts} />
+          <AppRouter
+            isLoggedIn={isLoggedIn}
+            userObj={userObj}
+            userDocObj={userDocObj}
+            fetchPosts={fetchPosts}
+            data={posts}
+          />
           <Footer />
         </>
       ) : (

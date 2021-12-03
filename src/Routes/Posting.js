@@ -253,16 +253,16 @@ const PostingButton = styled.input`
 /*
  * Posting Component
  */
-const Posting = () => {
+const Posting = ({ fetchPosts }) => {
   const navigation = useNavigate();
   const uploadPhotoRef = useRef();
   const user = authService.currentUser;
 
   const [step, setStep] = useState(1);
   const [title, setTitle] = useState('');
-  const [totalPartNum, setTotalPartNum] = useState('');
-  const [totalPrice, setTotalPrice] = useState('');
-  const [selectedImg, setSelectedImg] = useState('');
+  const [totalPartNum, setTotalPartNum] = useState();
+  const [totalPrice, setTotalPrice] = useState();
+  const [selectedImg, setSelectedImg] = useState();
 
   const handleClick = async (e) => {
     const {
@@ -272,7 +272,7 @@ const Posting = () => {
     if (name === 'prev' && step !== 1) setStep(step - 1);
     else if (name === 'next' && step !== 3) setStep(step + 1);
     else if (name === 'confirm') {
-      if (title !== '' && totalPrice !== '' && totalPartNum !== '' && selectedImg !== '') {
+      if (title && totalPrice && totalPartNum && selectedImg) {
         const fileRef = storageRef(storageService, `${user.uid}/${v4()}`);
         const res = await uploadString(fileRef, selectedImg, 'data_url');
         const fileURL = await getDownloadURL(res.ref);
@@ -285,13 +285,13 @@ const Posting = () => {
           title: title,
           photoURL: fileURL,
           totalPartNum: totalPartNum,
-          currentPartNum: 0,
-          currentPartUser: [],
+          currentPartNum: 1,
+          currentPartUser: [user.uid],
           totalPrice: totalPrice,
           liked: 0,
           createdAt: serverTimestamp(),
         });
-
+        fetchPosts();
         navigation('/');
       } else {
         alert('스텝을 모두 완료해주세요');
@@ -356,7 +356,7 @@ const Posting = () => {
               <Input
                 type='number'
                 name='totalPrice'
-                value={totalPrice}
+                value={totalPrice || 0}
                 onChange={handleChange}
                 width='220px'
               />
@@ -367,7 +367,7 @@ const Posting = () => {
               <Input
                 type='number'
                 name='totalPartNum'
-                value={totalPartNum}
+                value={totalPartNum || 0}
                 onChange={handleChange}
                 width='100px'
               />
