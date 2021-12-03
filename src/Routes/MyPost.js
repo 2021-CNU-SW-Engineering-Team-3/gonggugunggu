@@ -9,7 +9,14 @@ import { Container, Row, Col } from 'react-bootstrap';
 /*
  * import for firebase
  */
-// import { authService } from '../fbase';
+import { authService, db } from '../fbase';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { deleteUser, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
+
+/*
+ * import for firebase
+ */
+import UserInfoModal from '../Components/UserInfoModal';
 
 /*
  * import for Component
@@ -166,13 +173,24 @@ const throttle = function (callback, waitTime) {
   };
 };
 
-const MyPost = ({ data }) => {
+
+
+const MyPost = ({ data, userObj, userDocObj}) => {
   const [products, setProducts] = useState(data);
+  const [userId, setUserId] = useState(userObj.id);
+
+  const post = products.filter(isMyPost);
 
   const [show, setShow] = useState(false);
   const [move, setMove] = useState(false);
   const [pageY, setPageY] = useState(0);
   const documentRef = useRef(document);
+
+  function isMyPost(element){
+    if (userDocObj.id == element.uid){
+      return true;
+    }
+  }
 
   const handleScroll = () => {
     const { pageYOffset } = window;
@@ -193,7 +211,6 @@ const MyPost = ({ data }) => {
 
   return (
     <>
-    <div>asd</div>
       <Header className={show ? (move ? 'move' : 'show') : ''}>
         <FlexBox className='inner'>
           <Gnb>
@@ -202,15 +219,17 @@ const MyPost = ({ data }) => {
           </Gnb>
         </FlexBox>
       </Header>
-      <TitleContainer>
+
+
+      <TitleContainer>     
         <Title className='g-4'>📌 내가 작성한 게시글</Title>
       </TitleContainer>
       <CardContainer>
         <Row xs={1} sm={1} md={2} lg={3} className='g-4'>
-          {products.map((_, index) => {
+          {post.map((_, index) => {
             return (
               <Col>
-                <ProductCard key={index} product={products[index]} />
+                <ProductCard key={index} product={post[index]} />
               </Col>
             );
           })}

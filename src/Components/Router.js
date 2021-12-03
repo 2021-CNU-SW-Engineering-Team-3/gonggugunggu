@@ -33,8 +33,7 @@ const AppRouter = ({ isLoggedIn, userObj, userDocObj, data }) => {
           <Route path='/friendsList' element={<FriendsList userObj={userObj} userDocObj={userDocObj} />} />
           <Route path='/posting' element={<Posting />} />
           <Route path='/detail/:id' element={<Detail data={data} />} />
-
-          <Route path='/myPost' element={<MyPost data={data} />} />
+          <Route path='/myPost' element={<MyPost data={data} userObj={userObj} userDocObj={userDocObj}/>} />
           <Route path='/partList' element={<PartList isLoggedIn={isLoggedIn} userObj={userObj} userDocObj={userDocObj} data={data} />} />
           
         </Routes>
