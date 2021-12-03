@@ -36,6 +36,7 @@ const fetchUser = async () => {
  */
 const data = [
   {
+    uid: "2RyC7rUv5qTIXIavghRpfpSHt6m1",
     id: 0,
     photoURL: product0,
     title: '콜라 공동구매',
@@ -46,6 +47,7 @@ const data = [
     totalPart: 10,
   },
   {
+    uid: "2RyC7rUv5qTIXIavghRpfpSHt6m1",
     id: 1,
     photoURL: product1,
     title: '게토레이 공동구매',
@@ -56,6 +58,7 @@ const data = [
     totalPart: 10,
   },
   {
+    uid: "asdasd",
     id: 2,
     photoURL: product2,
     title: '과자 공동구매',
@@ -66,6 +69,7 @@ const data = [
     totalPart: 10,
   },
   {
+    uid: "12asdzxc",
     id: 3,
     photoURL: product3,
     title: '음료수 공동구매',
