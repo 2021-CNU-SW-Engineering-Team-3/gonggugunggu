@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Card } from 'react-bootstrap';
+import unknownPersonImg from '../Images/Unknown_person.jpeg';
 
 const CardContainer = styled(Card)`
   height: 550px;
@@ -77,7 +78,12 @@ const RowFlex = styled.div`
 const FriendCard = ({ friends }) => {
   return (
     <CardContainer>
-      <CardImage variant='top' src={friends.photoURL} />
+      {console.log(friends.photoURL)}
+      {friends.photoURL === null || friends.photoURL === '' ? (
+        <CardImage variant='top' src={unknownPersonImg} />
+      ) : (
+        <CardImage variant='top' src={friends.photoURL} />
+      )}
       <CardBody>
         <ColumnFlex>
           <CardTitle>{friends.name}</CardTitle>

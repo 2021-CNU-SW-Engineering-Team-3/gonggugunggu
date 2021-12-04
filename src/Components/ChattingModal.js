@@ -171,7 +171,7 @@ const OpponentChat = styled.div`
   padding: 10px 15px;
 `;
 
-const ChattingModal = ({ handleModalClick, userDocObj, opponentObj }) => {
+const ChattingModal = ({ handleModalClick, opponentObj }) => {
   const [tempInput, setTempInput] = useState('');
   const [chatList, setChatList] = useState(null);
   const [roomKey, setRoomKey] = useState(null);
@@ -219,7 +219,7 @@ const ChattingModal = ({ handleModalClick, userDocObj, opponentObj }) => {
     // 채팅방 유저 목록 디비 생성
     get(child(dbRef, 'roomUsers/' + roomKey))
       .then((snapshot) => {
-        if (snapshot.exists()) {
+        if (snapshot === null) {
           console.log('ChattingRoom DB already exist.');
         } else {
           set(ref(rt_db, 'roomUsers/' + roomKey), {
@@ -232,23 +232,6 @@ const ChattingModal = ({ handleModalClick, userDocObj, opponentObj }) => {
         console.error(error);
       });
 
-    // 유저의 채팅 목록 생성
-    set(ref(rt_db, 'userRooms/' + user.uid + '/' + roomKey), {
-      lastMessage: message,
-      timestamp: serverTimestamp(),
-      roomid: roomKey,
-      roomUserName: user.displayName + '@' + opponentObj.name,
-      roomuserList: user.uid + '@' + opponentObj.id,
-    });
-
-    set(ref(rt_db, 'userRooms/' + opponentObj.id + '/' + roomKey), {
-      lastMessage: message,
-      timestamp: serverTimestamp(),
-      roomid: roomKey,
-      roomUserName: opponentObj.name + '@' + user.displayName,
-      roomuserList: opponentObj.id + '@' + user.uid,
-    });
-
     setTempInput('');
   };
 
@@ -256,9 +239,11 @@ const ChattingModal = ({ handleModalClick, userDocObj, opponentObj }) => {
     if (roomKey) {
       const messageRef = ref(rt_db, 'messages/' + roomKey);
       onValue(query(messageRef, orderByChild('timestamp')), (snapshot) => {
-        const data = Object.values(snapshot.val());
-        setChatList(data);
-        useChattingBox.current.scrollTo(0, 10000);
+        if (snapshot.val() !== null && snapshot.val() !== undefined) {
+          const data = Object.values(snapshot.val());
+          setChatList(data);
+          useChattingBox.current.scrollTo(0, 10000);
+        }
       });
     }
   };
