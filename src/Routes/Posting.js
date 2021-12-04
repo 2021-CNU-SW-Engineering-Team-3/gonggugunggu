@@ -253,7 +253,7 @@ const PostingButton = styled.input`
 /*
  * Posting Component
  */
-const Posting = ({ fetchPosts, userDocObj }) => {
+const Posting = ({ fetchPosts, userDocObj, fetchUser, setUserDocObj }) => {
   const navigation = useNavigate();
   const uploadPhotoRef = useRef();
   const user = authService.currentUser;
@@ -301,6 +301,13 @@ const Posting = ({ fetchPosts, userDocObj }) => {
             { merge: true },
           );
           fetchPosts();
+          fetchUser()
+            .then((user) => {
+              setUserDocObj(user);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
           navigation('/');
         } else {
           alert(
