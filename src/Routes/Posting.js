@@ -253,7 +253,7 @@ const PostingButton = styled.input`
 /*
  * Posting Component
  */
-const Posting = ({ fetchPosts }) => {
+const Posting = ({ fetchPosts, userDocObj }) => {
   const navigation = useNavigate();
   const uploadPhotoRef = useRef();
   const user = authService.currentUser;
@@ -273,26 +273,40 @@ const Posting = ({ fetchPosts }) => {
     else if (name === 'next' && step !== 3) setStep(step + 1);
     else if (name === 'confirm') {
       if (title && totalPrice && totalPartNum && selectedImg) {
-        const fileRef = storageRef(storageService, `${user.uid}/${v4()}`);
-        const res = await uploadString(fileRef, selectedImg, 'data_url');
-        const fileURL = await getDownloadURL(res.ref);
+        if (userDocObj.point >= totalPrice + totalPrice / totalPartNum) {
+          const fileRef = storageRef(storageService, `${user.uid}/${v4()}`);
+          const res = await uploadString(fileRef, selectedImg, 'data_url');
+          const fileURL = await getDownloadURL(res.ref);
 
-        const postid = v4();
+          const postid = v4();
 
-        await setDoc(doc(db, 'posts', postid), {
-          uid: user.uid,
-          postid: postid,
-          title: title,
-          photoURL: fileURL,
-          totalPartNum: totalPartNum,
-          currentPartNum: 1,
-          currentPartUser: [user.uid],
-          totalPrice: totalPrice,
-          liked: 0,
-          createdAt: serverTimestamp(),
-        });
-        fetchPosts();
-        navigation('/');
+          await setDoc(doc(db, 'posts', postid), {
+            uid: user.uid,
+            postid: postid,
+            title: title,
+            photoURL: fileURL,
+            totalPartNum: totalPartNum,
+            currentPartNum: 1,
+            currentPartUser: [user.uid],
+            totalPrice: totalPrice,
+            liked: 0,
+            createdAt: serverTimestamp(),
+          });
+
+          await setDoc(
+            doc(db, 'users', user.uid),
+            {
+              point: userDocObj.point - totalPrice / totalPartNum,
+            },
+            { merge: true },
+          );
+          fetchPosts();
+          navigation('/');
+        } else {
+          alert(
+            '게시글 작성을 위해서는 총 금액에 자신의 참여 비용을 더한 포인트 보다 많은 포인트를 가지고 있어야 합니다.',
+          );
+        }
       } else {
         alert('스텝을 모두 완료해주세요');
       }
