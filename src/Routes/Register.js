@@ -174,6 +174,7 @@ const Register = () => {
             email: userCredential.user.email,
             name: name,
             photoURL: fileURL,
+            point: 100000,
             role: 'user',
             totalRate: 0,
             evaluateCount: 0,
