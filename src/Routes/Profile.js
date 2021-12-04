@@ -183,7 +183,7 @@ const Infos = styled.div`
 
 const Info = styled.div`
   font-size: 23px;
-  font-weight: 200;
+  font-weight: 500;
   margin-bottom: 5px;
 `;
 
@@ -321,6 +321,7 @@ const Profile = ({ userObj, userDocObj }) => {
               ? Math.round((userDocObj.totalRate / userDocObj.evaluateCount) * 10) / 10
               : 0}
           </Info>
+          <Info>포인트 {userDocObj.point} 원</Info>
         </Infos>
         <Buttons>
           <Button color='black' name='info' onClick={onModalClick}>
