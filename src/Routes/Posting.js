@@ -273,7 +273,7 @@ const Posting = ({ fetchPosts, userDocObj }) => {
     else if (name === 'next' && step !== 3) setStep(step + 1);
     else if (name === 'confirm') {
       if (title && totalPrice && totalPartNum && selectedImg) {
-        if (userDocObj.point >= totalPrice + totalPrice / totalPartNum) {
+        if (userDocObj.point >= Number(totalPrice) + Number(totalPrice) / Number(totalPartNum)) {
           const fileRef = storageRef(storageService, `${user.uid}/${v4()}`);
           const res = await uploadString(fileRef, selectedImg, 'data_url');
           const fileURL = await getDownloadURL(res.ref);
