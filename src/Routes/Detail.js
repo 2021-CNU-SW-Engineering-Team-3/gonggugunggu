@@ -179,6 +179,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
           doc(db, 'users', user.uid),
           {
             point: userDocObj.point - post.totalPrice / post.totalPartNum,
+            currentParts: [ ...userDocObj.currentParts, post.postid],
           },
           { merge: true },
         );
