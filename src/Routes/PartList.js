@@ -6,10 +6,6 @@ import styled, { keyframes } from 'styled-components';
 
 import { Container, Row, Col } from 'react-bootstrap';
 
-/*
- * import for firebase
- */
-// import { authService } from '../fbase';
 
 /*
  * import for Component
@@ -166,15 +162,22 @@ const throttle = function (callback, waitTime) {
   };
 };
 
-const PartList = ({ data }) => {
+const PartList = ({ data, userObj, userDocObj }) => {
   const [products, setProducts] = useState(data);
-
+  const [userCurrentPost, setUserCurrentPost] = useState([]);
   const [show, setShow] = useState(false);
   const [move, setMove] = useState(false);
   const [pageY, setPageY] = useState(0);
   const documentRef = useRef(document);
+  const post = products.filter(isMyPost);
 
+  function isMyPost(element){
+    if (userDocObj.currentParts.includes(element.postid)){
+      return true;
+    }
+  }
   const handleScroll = () => {
+    
     const { pageYOffset } = window;
     console.log(pageYOffset);
     const show = pageYOffset >= 100;
@@ -193,7 +196,6 @@ const PartList = ({ data }) => {
 
   return (
     <>
-    <div>asd</div>
       <Header className={show ? (move ? 'move' : 'show') : ''}>
         <FlexBox className='inner'>
           <Gnb>
@@ -207,10 +209,10 @@ const PartList = ({ data }) => {
       </TitleContainer>
       <CardContainer>
         <Row xs={1} sm={1} md={2} lg={3} className='g-4'>
-          {products.map((_, index) => {
+          {post.map((_, index) => {
             return (
               <Col>
-                <ProductCard key={index} product={products[index]} />
+                <ProductCard key={index} product={post[index]} />
               </Col>
             );
           })}
