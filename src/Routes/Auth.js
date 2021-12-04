@@ -3,13 +3,25 @@
  */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 /*
  * import for firebase
  */
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { authService } from '../fbase';
+
+/*
+ * Keyframes
+ */
+const appear = keyframes`
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+`;
 
 /*
  * Styled Component
@@ -20,6 +32,7 @@ const LoginWrap = styled.div`
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
+  animation: ${appear} 0.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
 `;
 
 const LoginBox = styled.div`

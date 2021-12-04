@@ -1,16 +1,17 @@
 /*
  * import for react
  */
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Container, Card } from 'react-bootstrap';
 
 /*
  * import for firebase
  */
 import { authService, db } from '../fbase';
-import { doc, deleteDoc } from 'firebase/firestore';
+import { doc, deleteDoc, getDoc } from 'firebase/firestore';
 import { deleteUser, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 
 /*
@@ -183,7 +184,7 @@ const Infos = styled.div`
 
 const Info = styled.div`
   font-size: 23px;
-  font-weight: 500;
+  font-weight: 200;
   margin-bottom: 5px;
 `;
 
@@ -219,128 +220,75 @@ const ResignButton = styled.button`
   }
 `;
 
-/*
- * Global Function
- */
-const throttle = function (callback, waitTime) {
-  let timerId = null;
-  return (e) => {
-    if (timerId) return;
-    timerId = setTimeout(() => {
-      callback.call(this, e);
-      timerId = null;
-    }, waitTime);
-  };
-};
+const UserDetail = ({ data }) => {
+  const [infoToggle, setInfoToggle] = useState(false);
+  // const [userName, setUserName] = useState(userObj.displayName);
+  // const [avataURL, setAvataURL] = useState(userObj.photoURL);
+  const { id } = useParams();
+  const [userId, setUserId] = useState(id);
+  const [userPhotoURL, setUserPhotoURL] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userName, setUserName] = useState('');
+  const [user, setUser] = useState(null);
 
-const Profile = ({ userObj, userDocObj }) => {
+  useEffect(async () => {
+    const docRef = doc(db, 'users', id);
+    const docSnap = await getDoc(docRef);
+  
+    if(docSnap.exists()) {
+      console.log("documenet data : " , docSnap.data().id);
+      setUserPhotoURL(docSnap.data().photoURL);
+      setUserEmail(docSnap.data().email);
+      setUserName(docSnap.data().name);
+      setUser(docSnap.data());
+    }
+    else{
+      console.log('no such document');
+    }
+  }, []);
+
   const navigate = useNavigate();
 
-  const [infoToggle, setInfoToggle] = useState(false);
-  const [userName, setUserName] = useState(userObj.displayName);
-  const [avataURL, setAvataURL] = useState(userObj.photoURL);
-
-  const [show, setShow] = useState(false);
-  const [move, setMove] = useState(false);
-  const [pageY, setPageY] = useState(0);
-  const documentRef = useRef(document);
-
-  const handleScroll = () => {
-    const { pageYOffset } = window;
-    const deltaY = pageYOffset - pageY;
-    const show = pageYOffset >= 170;
-    const move = pageYOffset >= 200 && deltaY >= 0;
-    setShow(show);
-    setMove(move);
-    setPageY(pageYOffset);
-  };
-
-  const throttleScroll = throttle(handleScroll, 50);
-
-  useEffect(() => {
-    documentRef.current.addEventListener('scroll', throttleScroll);
-    return () => documentRef.current.removeEventListener('scroll', throttleScroll);
-  }, [pageY]);
-
   const onResignClick = () => {
-    const user = authService.currentUser;
-
-    if (window.confirm('정말 회원 탈퇴하시겠습니까?') === true) {
+    if (window.confirm('정말 회원 삭제하시겠습니까?') === true) {
       const password = window.prompt('비밀번호를 입력해주세요');
-      const credential = EmailAuthProvider.credential(user.email, password);
+      // const credential = EmailAuthProvider.credential(user.email, password);
 
-      reauthenticateWithCredential(user, credential)
-        .then(() => {
-          deleteUser(user)
-            .then(async () => {
-              await deleteDoc(doc(db, 'users', user.uid));
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          navigate('/');
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };
+      const docRef = doc(db, 'users', user.id);
+      deleteDoc(docRef);
 
-  const onModalClick = (e) => {
-    const {
-      target: { name },
-    } = e;
+      deleteUser()
 
-    if (name === 'info' || e.target.getAttribute('name') === 'info') {
-      setInfoToggle((prev) => !prev);
+      navigate('/userList');
     }
   };
 
   return (
-    <>
-      <Header className={show ? (move ? 'move' : 'show') : ''}>
-        <FlexBox className='inner'>
-          <Gnb>
-            <Pin>👀</Pin>
-            <Text>프로필</Text>
-          </Gnb>
-        </FlexBox>
-      </Header>
-      <TitleContainer>
-        <Title className='g-4'>👀 프로필</Title>
-        <SubTitle>프로필 사진과 이름을 바꿀 수 있습니다</SubTitle>
-      </TitleContainer>
-      <ProfileWrap>
-        <Avata src={avataURL} />
+    <ProfileWrap>
+      <>
         <Infos>
+          <Avata src={userPhotoURL} />
           <Name>{userName}</Name>
-          <Info>{userObj.email}</Info>
-          <Info>
-            백마지수 :
-            {userDocObj.evaluateCount > 0
-              ? Math.round((userDocObj.totalRate / userDocObj.evaluateCount) * 10) / 10
-              : 0}
-          </Info>
-          <Info>포인트 {userDocObj.point} 원</Info>
+          <Info>{userEmail}</Info>
         </Infos>
         <Buttons>
-          <Button color='black' name='info' onClick={onModalClick}>
+          {/* <Button color='black' name='info' onClick={onModalClick}>
             정보 수정
-          </Button>
+          </Button> */}
           <ResignButton onClick={onResignClick}>회원 탈퇴</ResignButton>
         </Buttons>
-      </ProfileWrap>
-      {infoToggle === true ? (
+      </>
+       
+      {/* {infoToggle === true ? (
         <UserInfoModal
           infoToggle={infoToggle}
           setAvataURL={setAvataURL}
           setUserName={setUserName}
           userObj={userObj}
-          onModalClick={onModalClick}
         />
-      ) : null}
-    </>
+      ) : null} */}
+    </ProfileWrap>
   );
 };
 
-export default Profile;
+export default UserDetail;

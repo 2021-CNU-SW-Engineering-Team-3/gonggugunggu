@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Container, Row, Col } from 'react-bootstrap';
 
 import FriendCard from '../Components/FriendCard';
 import ChattingModal from '../Components/ChattingModal';
+import DeleteModal from '../Components/DeleteModal';
 
 const CardAppear = keyframes`
     0% {
@@ -36,9 +37,9 @@ const Button = styled.button`
   justify-content: center;
   font-size: 18px;
   margin: 8px 0;
-  width: 95%;
+  width: 45%;
   border: 2px solid black;
-  margin: 10px;
+  margin: 5px;
   border-radius: 5px;
 
   &:hover {
@@ -48,20 +49,37 @@ const Button = styled.button`
   }
 `;
 
-const FriendsList = ({ userObj, userDocObj }) => {
-  const [userName, setUserName] = useState(userObj.displayName);
+const FriendsList = ({ userObj, userDocObj, fetchUser, setUserDocObj }) => {
   const [friends, setFriends] = useState(userDocObj.friends);
   const [loaded, setLoaded] = useState(false);
   const [chattingToggle, setChattingToggle] = useState(false);
   const [clickedUser, setClickedUser] = useState('');
+  const [deleteToggle, setDeleteToggle] = useState(false);
 
-  if (friends === undefined && userDocObj.friends !== undefined) setFriends(userDocObj.friends);
+  if ((friends === undefined && userDocObj.friends !== undefined) || userDocObj.friends !== friends)
+    setFriends(userDocObj.friends);
 
   const handleModalClick = (e, value) => {
     e.preventDefault();
     !chattingToggle ? setClickedUser(value) : setClickedUser('');
     setChattingToggle((prev) => !prev);
   };
+
+  const handleDeleteClick = (e, value) => {
+    e.preventDefault();
+    !deleteToggle ? setClickedUser(value) : setClickedUser('');
+    setDeleteToggle((prev) => !prev);
+  };
+
+  useEffect(() => {
+    fetchUser()
+      .then((user) => {
+        setUserDocObj(user);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [deleteToggle]);
 
   return (
     <>
@@ -76,6 +94,9 @@ const FriendsList = ({ userObj, userDocObj }) => {
                   <Button color={'black'} onClick={(e) => handleModalClick(e, val)}>
                     채팅하기
                   </Button>
+                  <Button color={'black'} onClick={(e) => handleDeleteClick(e, val)}>
+                    삭제하기
+                  </Button>
                 </Col>
               );
             })
@@ -85,11 +106,12 @@ const FriendsList = ({ userObj, userDocObj }) => {
         </Row>
       </CardContainer>
       {chattingToggle === true ? (
-        <ChattingModal
-          handleModalClick={handleModalClick}
-          userDocObj={userDocObj}
-          opponentObj={clickedUser}
-        ></ChattingModal>
+        <ChattingModal handleModalClick={handleModalClick} opponentObj={clickedUser}></ChattingModal>
+      ) : (
+        ''
+      )}
+      {deleteToggle === true ? (
+        <DeleteModal handleDeleteClick={handleDeleteClick} opponentObj={clickedUser}></DeleteModal>
       ) : (
         ''
       )}

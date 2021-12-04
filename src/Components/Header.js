@@ -1,7 +1,6 @@
 /*
  * import for react
  */
-
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineSearch } from 'react-icons/all';
@@ -16,6 +15,7 @@ import logo from '../Images/gonggugunggu.png';
 /*
  * Styled Component
  */
+
 const Header = styled.header`
   position: fixed;
   top: 0;
@@ -26,11 +26,13 @@ const Header = styled.header`
   height: 80px;
   background-color: #fff;
   z-index: 1000; //z축 순서 스크롤해도 최상위 유지
+  border-bottom: 1px solid white;
   transition: all ease-out 0.2s;
 
   &.show {
+    transform: translateY(0);
     border-bottom: 1px solid #e8e8e8;
-    transition: all ease-out 0s;
+    transition: all ease-out 0.2s;
   }
   &.hide {
     transform: translateY(-80px);

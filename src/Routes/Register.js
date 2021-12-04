@@ -2,7 +2,7 @@
  * import for react
  */
 import { useState, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 /*
  * import for firebase
@@ -19,6 +19,18 @@ import unknown from '../Images/Unknown_person.jpeg';
 import { v4 } from 'uuid';
 
 /*
+ * Keyframes
+ */
+const appear = keyframes`
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+`;
+
+/*
  * Styled Component
  */
 const RegisterWrap = styled.div`
@@ -27,6 +39,7 @@ const RegisterWrap = styled.div`
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
+  animation: ${appear} 0.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
 `;
 
 const RegisterBox = styled.div`
@@ -117,13 +130,13 @@ const Button = styled.input`
  * Register Component
  */
 const Register = () => {
+  const uploadPhotoRef = useRef();
+
   const [selectedImg, setSelectedImg] = useState(unknown);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  const uploadPhotoRef = useRef();
 
   const onSignClick = (e) => {
     e.preventDefault();
@@ -132,27 +145,11 @@ const Register = () => {
     } else {
       createUserWithEmailAndPassword(authService, email, password)
         .then(async (userCredential) => {
-          // Add to DB
-
-          await setDoc(doc(db, 'users', userCredential.user.uid), {
-            id: userCredential.user.uid,
-            email: userCredential.user.email,
-            role: 'user',
-            totalRate: 0,
-            evaluateCount: 0,
-            numberOfReport: 0,
-            createdAt: serverTimestamp(),
-          });
-        })
-        .then(async () => {
           // Update displayName, photoURL
-
-          const user = authService.currentUser;
-
           let fileURL = '';
 
           if (selectedImg !== unknown) {
-            const fileRef = storageRef(storageService, `${user.uid}/${v4()}`);
+            const fileRef = storageRef(storageService, `${userCredential.user.uid}/${v4()}`);
             const res = await uploadString(fileRef, selectedImg, 'data_url');
             fileURL = await getDownloadURL(res.ref);
           } else {
@@ -169,6 +166,22 @@ const Register = () => {
             .catch((error) => {
               console.long(error);
             });
+
+          // Add to DB
+
+          await setDoc(doc(db, 'users', userCredential.user.uid), {
+            id: userCredential.user.uid,
+            email: userCredential.user.email,
+            name: name,
+            photoURL: fileURL,
+            point: 100000,
+            role: 'user',
+            totalRate: 0,
+            evaluateCount: 0,
+            numberOfReport: 0,
+            currentParts: [],
+            createdAt: serverTimestamp(),
+          });
         })
         .then(() => {
           // Send Email Verification

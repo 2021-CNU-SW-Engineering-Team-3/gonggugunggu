@@ -1,9 +1,16 @@
 /*
  * import for react
  */
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Container, Card, Row, Col } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import styled, { keyframes } from 'styled-components';
+
+/*
+ * import for firebase
+ */
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { authService, db } from '../fbase';
 
 import unknown from '../Images/Unknown_person.jpeg';
 
@@ -92,10 +99,6 @@ const Price = styled.div`
   font-weight: 700;
 `;
 
-const Description = styled.div`
-  margin-bottom: 40px;
-`;
-
 const PartiButton = styled.button`
   background-color: #ededed;
   font-size: 16px;
@@ -118,34 +121,119 @@ const PartiButton = styled.button`
   margin-bottom: 40px;
 `;
 
-const Detail = ({ data }) => {
+const MySpinner = styled(Spinner)`
+  position: fixed;
+  left: 48%;
+  top: 48%;
+`;
+
+const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
   let { id } = useParams();
-  let findProduct = data.find((item) => {
-    return Number(item.id) === Number(id);
-  });
+  const navigation = useNavigate();
+  const [postUser, setPostUser] = useState();
+  const [post, setPost] = useState();
+  const user = authService.currentUser;
+
+  const getPost = useCallback(async () => {
+    if (data) {
+      const findPost = data.find((item) => {
+        return item.postid === id;
+      });
+      setPost(findPost);
+    }
+  }, [data, id]);
+
+  const getUser = useCallback(async () => {
+    if (post) {
+      const docRef = doc(db, 'users', post.uid);
+      const docSnap = await getDoc(docRef);
+      setPostUser(docSnap.data());
+    }
+  }, [post]);
+
+  useEffect(() => {
+    getPost();
+  }, [getPost]);
+
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
+
+  const handleClick = async () => {
+    const findUser = post.currentPartUser.find((item) => {
+      return item === user.uid;
+    });
+
+    if (post.currentPartNum < post.totalPartNum) {
+      if (!findUser) {
+        await setDoc(
+          doc(db, 'posts', post.postid),
+          {
+            currentPartNum: post.currentPartNum + 1,
+            currentPartUser: [...post.currentPartUser, user.uid],
+          },
+          { merge: true },
+        );
+
+        await setDoc(
+          doc(db, 'users', user.uid),
+          {
+            point: userDocObj.point - post.totalPrice / post.totalPartNum,
+            currentParts: [ ...userDocObj.currentParts, post.postid],
+          },
+          { merge: true },
+        );
+        alert(`참여 완료. 포인트가 ${post.totalPrice / post.totalPartNum} 포인트가 차감됩니다.`);
+        fetchPosts();
+        fetchUser()
+          .then((user) => {
+            setUserDocObj(user);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        navigation('/');
+      } else {
+        alert('이미 참여 중 입니다.');
+      }
+    } else {
+      alert('모집이 끝났습니다.');
+    }
+  };
 
   return (
-    <DetailContainer>
-      <PhotoContainer>
-        <Photo src={findProduct.photoURL} alt='product' width='100%' />
-      </PhotoContainer>
+    <div>
+      {post && postUser ? (
+        <DetailContainer>
+          <PhotoContainer>
+            <Photo src={post.photoURL} alt='product' width='100%' />
+          </PhotoContainer>
 
-      <UserContainer>
-        <UserLeft>
-          <Avata src={unknown} />
-          <UserName>홍길동</UserName>
-        </UserLeft>
-        <Rate>백마지수 35</Rate>
-      </UserContainer>
+          <UserContainer>
+            <UserLeft>
+              <Avata src={postUser.photoURL} />
+              <UserName>{postUser.name}</UserName>
+            </UserLeft>
+            <Rate>백마지수 {postUser.rate}</Rate>
+          </UserContainer>
 
-      <BodyContainer>
-        <Title>{findProduct.title}</Title>
-        <Price>{findProduct.totalPrice}원</Price>
-        <Description>{findProduct.content}</Description>
-      </BodyContainer>
+          <BodyContainer>
+            <Title>{post.title}</Title>
+            <Price>참여비용 {post.totalPrice / post.totalPartNum}원</Price>
+            <Title>♡{post.liked}</Title>
+            <Title>
+              현재 참여 인원 {post.currentPartNum}/{post.totalPartNum}
+            </Title>
+          </BodyContainer>
 
-      <PartiButton>공동구매 참여</PartiButton>
-    </DetailContainer>
+          <PartiButton onClick={handleClick}>공동구매 참여</PartiButton>
+        </DetailContainer>
+      ) : (
+        <MySpinner animation='border' role='status'>
+          <span className='visually-hidden'>Loading...</span>
+        </MySpinner>
+      )}
+    </div>
   );
 };
 
