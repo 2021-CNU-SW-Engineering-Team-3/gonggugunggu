@@ -20,7 +20,7 @@ import PartList from '../Routes/PartList';
 /*
  * AppRouter Component
  */
-const AppRouter = ({ isLoggedIn, userObj, userDocObj, fetchPosts, data }) => {
+const AppRouter = ({ isLoggedIn, userObj, userDocObj, fetchPosts, data, fetchUser, setUserDocObj }) => {
   return (
     <Router>
       <MyHeader isLoggedIn={isLoggedIn} userObj={userObj} userDocObj={userDocObj} />
@@ -31,10 +31,28 @@ const AppRouter = ({ isLoggedIn, userObj, userDocObj, fetchPosts, data }) => {
           <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<Profile userObj={userObj} userDocObj={userDocObj} />} />
           <Route path='/friendsList' element={<FriendsList userObj={userObj} userDocObj={userDocObj} />} />
-          <Route path='/posting' element={<Posting fetchPosts={fetchPosts} userDocObj={userDocObj} />} />
+          <Route
+            path='/posting'
+            element={
+              <Posting
+                fetchPosts={fetchPosts}
+                userDocObj={userDocObj}
+                fetchUser={fetchUser}
+                setUserDocObj={setUserDocObj}
+              />
+            }
+          />
           <Route
             path='/detail/:id'
-            element={<Detail fetchPosts={fetchPosts} data={data} userDocObj={userDocObj} />}
+            element={
+              <Detail
+                fetchPosts={fetchPosts}
+                data={data}
+                userDocObj={userDocObj}
+                fetchUser={fetchUser}
+                setUserDocObj={setUserDocObj}
+              />
+            }
           />
           <Route path='/myPost' element={<MyPost data={data} userObj={userObj} userDocObj={userDocObj} />} />
           <Route

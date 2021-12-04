@@ -85,6 +85,8 @@ const App = () => {
             userObj={userObj}
             userDocObj={userDocObj}
             fetchPosts={fetchPosts}
+            fetchUser={fetchUser}
+            setUserDocObj={setUserDocObj}
             data={posts}
           />
           <Footer />

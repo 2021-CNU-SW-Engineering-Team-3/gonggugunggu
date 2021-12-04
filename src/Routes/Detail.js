@@ -127,7 +127,7 @@ const MySpinner = styled(Spinner)`
   top: 48%;
 `;
 
-const Detail = ({ fetchPosts, data, userDocObj }) => {
+const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
   let { id } = useParams();
   const navigation = useNavigate();
   const [postUser, setPostUser] = useState();
@@ -176,7 +176,7 @@ const Detail = ({ fetchPosts, data, userDocObj }) => {
         );
 
         await setDoc(
-          doc(db, 'users', post.user.uid),
+          doc(db, 'users', user.uid),
           {
             point: userDocObj.point - post.totalPrice / post.totalPartNum,
           },
@@ -184,6 +184,13 @@ const Detail = ({ fetchPosts, data, userDocObj }) => {
         );
         alert(`참여 완료. 포인트가 ${post.totalPrice / post.totalPartNum} 포인트가 차감됩니다.`);
         fetchPosts();
+        fetchUser()
+          .then((user) => {
+            setUserDocObj(user);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         navigation('/');
       } else {
         alert('이미 참여 중 입니다.');
