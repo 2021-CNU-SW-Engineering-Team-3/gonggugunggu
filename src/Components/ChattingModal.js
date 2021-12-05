@@ -184,11 +184,10 @@ const ChattingModal = ({ handleModalClick, opponentObj }) => {
     let roomKey = user.uid + opponentObj.id;
     get(child(dbRef, 'messages/' + roomKey)).then((snapshot) => {
       if (snapshot.exists()) {
-        console.log(snapshot);
-        console.log('1 roomKey : roomKey');
+        console.log('1 roomKey : ' + roomKey);
       } else {
         roomKey = opponentObj.id + user.uid;
-        console.log('2 roomKey : roomKey');
+        console.log('2 roomKey : ' + roomKey);
       }
       setRoomKey(roomKey);
     });
