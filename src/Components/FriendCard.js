@@ -78,19 +78,17 @@ const RowFlex = styled.div`
 const FriendCard = ({ friends }) => {
   return (
     <CardContainer>
-      {console.log(friends.photoURL)}
-      {friends.photoURL === null || friends.photoURL === '' ? (
+      {friends[0].photoURL === null || friends[0].photoURL === '' ? (
         <CardImage variant='top' src={unknownPersonImg} />
       ) : (
-        <CardImage variant='top' src={friends.photoURL} />
+        <CardImage variant='top' src={friends[0].photoURL} />
       )}
       <CardBody>
         <ColumnFlex>
-          <CardTitle>{friends.name}</CardTitle>
+          <CardTitle>{friends[0].name}</CardTitle>
         </ColumnFlex>
-
         <RowFlex>
-          <CardDescription>백마지수 : {friends.rate}</CardDescription>
+          <CardDescription>백마지수 : {friends[0].totalRate}</CardDescription>
         </RowFlex>
       </CardBody>
     </CardContainer>

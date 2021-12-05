@@ -10,7 +10,7 @@ import styled, { keyframes } from 'styled-components';
  * import for firebase
  */
 
-import { doc, getDoc, setDoc ,deleteDoc, updateDoc} from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteDoc, updateDoc, arrayUnion, get, child } from 'firebase/firestore';
 import { authService, db } from '../fbase';
 
 const CardAppear = keyframes`
@@ -262,22 +262,19 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
     getPartUsers();
   }, [getPartUsers]);
 
-  
-  function filtercurrentParts(userparts){
+  function filtercurrentParts(userparts) {
     var index = userparts.indexOf(post.postid);
-    console.log(index);
     if (index > -1) {
       userparts.splice(index, 1);
     }
-    return userparts
+    return userparts;
   }
 
   //게시글 삭제
   const RemovePostClick = async () => {
     const docRef2 = doc(db, 'posts', post.postid);
     deleteDoc(docRef2);
-    for (var i=0; i<partUsers.length; i++){
-      console.log( partUsers[i].id);
+    for (var i = 0; i < partUsers.length; i++) {
       await setDoc(
         doc(db, 'users', partUsers[i].id),
         {
@@ -305,8 +302,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
         console.log(error);
       });
     navigation('/');
-  }
-  
+  };
 
   const handleClick = async () => {
     const findUser = post.currentPartUser.find((item) => {
@@ -350,6 +346,78 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
     }
   };
 
+  const handleAddButton = (e, value) => {
+    e.preventDefault();
+
+    requestFriend(value);
+  };
+
+  const requestFriend = async (value) => {
+    const userRef = doc(db, 'users', user.uid);
+    const opponentRef = doc(db, 'users', value.id);
+
+    //이미 친구거나 친구신청을 했다면 return
+    const userSnap = await getDoc(userRef);
+    const opponentSnap = await getDoc(opponentRef);
+
+    //이미 친구인 경우
+    if (userSnap.data().friends !== undefined && opponentSnap.data().friends !== undefined) {
+      if (
+        Object.keys(userSnap.data().friends).includes(value.id) &&
+        Object.keys(opponentSnap.data().friends).includes(user.uid)
+      ) {
+        alert('이미 친구입니다.');
+        return;
+      }
+    }
+    if (userSnap.data().waitingFriend !== undefined && opponentSnap.data().waitingFriend !== undefined) {
+      if (
+        userSnap.data().waitingFriend.wait !== undefined &&
+        opponentSnap.data().waitingFriend.requested !== undefined
+      ) {
+        if (
+          Object.keys(userSnap.data().waitingFriend.wait).includes(value.id) &&
+          Object.keys(opponentSnap.data().waitingFriend.requested).includes(user.uid)
+        ) {
+          alert('이미 친구신청을 한 상대입니다.');
+          return;
+        }
+      } else if (
+        userSnap.data().waitingFriend.requested !== undefined &&
+        opponentSnap.data().waitingFriend.wait !== undefined
+      ) {
+        if (
+          Object.keys(userSnap.data().waitingFriend.requested).includes(value.id) &&
+          Object.keys(opponentSnap.data().waitingFriend.wait).includes(user.uid)
+        ) {
+          alert('이미 상대방이 친구신청을 하였습니다.');
+          return;
+        }
+      }
+    }
+    //친구 신청 보내기
+    //requested = 신청 받음, wait = 신청 보냄
+    await updateDoc(userRef, {
+      ['waitingFriend.wait.' + value.id]: arrayUnion({
+        id: value.id,
+        name: value.name,
+        totalRate: value.totalRate,
+        photoURL: value.photoURL,
+      }),
+    });
+
+    await updateDoc(opponentRef, {
+      ['waitingFriend.requested.' + user.uid]: arrayUnion({
+        id: user.uid,
+        name: user.displayName,
+        totalRate: userDocObj.totalRate,
+        photoURL: user.photoURL,
+      }),
+    });
+
+    alert(value.name + '님께 친구신청을 보냈습니다.');
+  };
+
   return (
     <div>
       {post && postUser ? (
@@ -362,7 +430,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
                 <Avata src={postUser.photoURL} />
                 <UserName>{postUser.name}</UserName>
               </UserLeft>
-              <Rate>백마지수 {postUser.rate}</Rate>
+              <Rate>백마지수 {postUser.totalRate}</Rate>
             </UserContainer>
 
             <BodyContainer>
@@ -371,7 +439,13 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
                   <Title>{post.title}</Title>
                   <Price>참여비용 {post.totalPrice / post.totalPartNum}원</Price>
                 </ColumnFlex>
-                {post.uid === user.uid ? <RemovePost className='removePost' onClick={RemovePostClick} >삭제</RemovePost> : ''}
+                {post.uid === user.uid ? (
+                  <RemovePost className='removePost' onClick={RemovePostClick}>
+                    삭제
+                  </RemovePost>
+                ) : (
+                  ''
+                )}
               </RowFlex>
             </BodyContainer>
 
@@ -398,9 +472,9 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
                   <UserLeft>
                     <Avata src={value.photoURL} />
                     <UserName>{value.name}</UserName>
-                    <Rate>백마지수 {value.rate}</Rate>
+                    <Rate>백마지수 {value.totalRate}</Rate>
                   </UserLeft>
-                  <Button>친구 추가</Button>
+                  <Button onClick={(e) => handleAddButton(e, value)}>친구 추가</Button>
                 </UserContainer>
               );
             })}
