@@ -121,7 +121,12 @@ const FriendsList = ({ userObj, userDocObj, fetchUser, setUserDocObj }) => {
             Object.values(requestedFriends).map((val) => {
               return (
                 <Col key={val[0].id}>
-                  <RequestedFriend friend={val} userDocObj={userDocObj} />
+                  <RequestedFriend
+                    friend={val}
+                    userDocObj={userDocObj}
+                    fetchUser={fetchUser}
+                    setUserDocObj={setUserDocObj}
+                  />
                 </Col>
               );
             })
@@ -134,7 +139,6 @@ const FriendsList = ({ userObj, userDocObj, fetchUser, setUserDocObj }) => {
         <Row xs={1} sm={1} md={2} lg={3} className='g-4'>
           {friends !== undefined && Object.values(friends).length !== 0 ? (
             Object.values(friends).map((val) => {
-              console.log(val);
               return (
                 <Col key={val[0].id}>
                   <FriendCard friends={val} />
