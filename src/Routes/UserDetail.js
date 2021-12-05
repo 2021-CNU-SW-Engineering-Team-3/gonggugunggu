@@ -186,7 +186,17 @@ const Info = styled.div`
   font-size: 23px;
   font-weight: 200;
   margin-bottom: 5px;
+
+  &.low {
+    color: red;
+    font-weight: bold;
+  }
+  
+  &.normal {
+    color: black;
+  }
 `;
+
 
 const Buttons = styled.div`
   display: flex;
@@ -222,14 +232,14 @@ const ResignButton = styled.button`
 
 const UserDetail = ({ data }) => {
   const [infoToggle, setInfoToggle] = useState(false);
-  // const [userName, setUserName] = useState(userObj.displayName);
-  // const [avataURL, setAvataURL] = useState(userObj.photoURL);
   const { id } = useParams();
-  const [userId, setUserId] = useState(id);
   const [userPhotoURL, setUserPhotoURL] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
   const [user, setUser] = useState(null);
+  const [show, setShow] = useState(false);
+  const [move, setMove] = useState(false);
+  const [userEval, setUserEval] = useState('');
 
   useEffect(async () => {
     const docRef = doc(db, 'users', id);
@@ -241,6 +251,7 @@ const UserDetail = ({ data }) => {
       setUserEmail(docSnap.data().email);
       setUserName(docSnap.data().name);
       setUser(docSnap.data());
+      setUserEval(docSnap.data().evaluateCount);
     }
     else{
       console.log('no such document');
@@ -251,43 +262,47 @@ const UserDetail = ({ data }) => {
 
   const onResignClick = () => {
     if (window.confirm('정말 회원 삭제하시겠습니까?') === true) {
-      const password = window.prompt('비밀번호를 입력해주세요');
-      // const credential = EmailAuthProvider.credential(user.email, password);
 
       const docRef = doc(db, 'users', user.id);
       deleteDoc(docRef);
-
-      deleteUser()
 
       navigate('/userList');
     }
   };
 
+  const onBackClick = () => {
+    navigate('/userList');
+  };
+
   return (
-    <ProfileWrap>
-      <>
+    <>
+      <Header className={show ? (move ? 'move' : 'show') : ''}>
+        <FlexBox className='inner'>
+          <Gnb>
+            <Pin>👀</Pin>
+            <Text>프로필</Text>
+          </Gnb>
+        </FlexBox>
+      </Header>
+      <TitleContainer>
+        <Title className='g-4'>👀 사용자 확인</Title>
+        <SubTitle>사용자 프로필을 확인하고, 삭제할 수 있습니다</SubTitle>
+      </TitleContainer>
+      <ProfileWrap>
+        <Avata src={userPhotoURL} />
         <Infos>
-          <Avata src={userPhotoURL} />
           <Name>{userName}</Name>
           <Info>{userEmail}</Info>
+          <Info className={userEval < 3 ? 'low' : 'normal'}>
+            백마지수 : {userEval}
+          </Info>
         </Infos>
         <Buttons>
-          {/* <Button color='black' name='info' onClick={onModalClick}>
-            정보 수정
-          </Button> */}
           <ResignButton onClick={onResignClick}>회원 탈퇴</ResignButton>
+          <Button onClick={onBackClick}>뒤로가기</Button>
         </Buttons>
-      </>
-       
-      {/* {infoToggle === true ? (
-        <UserInfoModal
-          infoToggle={infoToggle}
-          setAvataURL={setAvataURL}
-          setUserName={setUserName}
-          userObj={userObj}
-        />
-      ) : null} */}
-    </ProfileWrap>
+      </ProfileWrap>
+    </>
   );
 };
 
