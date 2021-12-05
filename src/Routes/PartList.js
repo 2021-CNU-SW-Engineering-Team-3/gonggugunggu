@@ -179,7 +179,6 @@ const PartList = ({ data, userObj, userDocObj }) => {
   const handleScroll = () => {
     
     const { pageYOffset } = window;
-    console.log(pageYOffset);
     const show = pageYOffset >= 100;
     const move = pageYOffset >= 120;
     setShow(show);

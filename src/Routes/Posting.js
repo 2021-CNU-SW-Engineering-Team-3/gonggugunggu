@@ -257,6 +257,7 @@ const Posting = ({ fetchPosts, userDocObj, fetchUser, setUserDocObj }) => {
   const navigation = useNavigate();
   const uploadPhotoRef = useRef();
   const user = authService.currentUser;
+  const [post, setPost] = useState();
 
   const [step, setStep] = useState(1);
   const [title, setTitle] = useState('');
@@ -297,7 +298,7 @@ const Posting = ({ fetchPosts, userDocObj, fetchUser, setUserDocObj }) => {
             doc(db, 'users', user.uid),
             {
               point: userDocObj.point - totalPrice / totalPartNum,
-              currentParts: [postid],
+              currentParts: [ ...userDocObj.currentParts, postid],
             },
             { merge: true },
           );
