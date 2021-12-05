@@ -17,11 +17,6 @@ import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 /*
  * Global function
  */
-const fetchUser = async () => {
-  const docRef = doc(db, 'users', authService.currentUser.uid);
-  const docSnap = await getDoc(docRef);
-  return docSnap.data();
-};
 
 /*
  * Styled Component
@@ -41,6 +36,12 @@ const App = () => {
   const [userObj, setUserObj] = useState();
   const [userDocObj, setUserDocObj] = useState({});
   const [posts, setPosts] = useState();
+
+  const fetchUser = useCallback(async () => {
+    const docRef = doc(db, 'users', authService.currentUser.uid);
+    const docSnap = await getDoc(docRef);
+    return docSnap.data();
+  }, []);
 
   const fetchPosts = useCallback(async () => {
     const temp = [];
