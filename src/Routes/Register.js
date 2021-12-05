@@ -181,6 +181,11 @@ const Register = () => {
             numberOfReport: 0,
             currentParts: [],
             createdAt: serverTimestamp(),
+            friends: [],
+            waitingFriend: {
+              wait: [],
+              requested: [],
+            },
           });
         })
         .then(() => {

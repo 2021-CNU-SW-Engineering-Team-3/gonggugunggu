@@ -3,6 +3,7 @@ import { Card } from 'react-bootstrap';
 import unknownPersonImg from '../Images/Unknown_person.jpeg';
 import { doc, updateDoc, deleteField, arrayUnion, getDoc } from 'firebase/firestore';
 import { authService, db } from '../fbase';
+import { useState, useEffect } from 'react';
 
 const CardContainer = styled(Card)`
   height: 100px;
@@ -100,7 +101,9 @@ const RefuseButton = styled(Button)`
   color: red;
 `;
 
-const FriendCard = ({ friend, userDocObj }) => {
+const FriendCard = ({ friend, userDocObj, fetchUser, setUserDocObj }) => {
+  const [refuseToggle, setRefuseToggle] = useState(false);
+  const [acceptToggle, setAcceptToggle] = useState(false);
   const user = authService.currentUser;
 
   const handleAcceptClick = async (e, value) => {
@@ -145,6 +148,10 @@ const FriendCard = ({ friend, userDocObj }) => {
         await updateDoc(opponentRef, {
           ['waitingFriend.wait.' + user.uid]: deleteField(),
         });
+
+        alert('이제부터 ' + value.name + '님과 친구입니다!');
+
+        setAcceptToggle((prev) => !prev);
       }
     }
   };
@@ -163,7 +170,22 @@ const FriendCard = ({ friend, userDocObj }) => {
     await updateDoc(opponentRef, {
       ['waitingFriend.wait.' + user.uid]: deleteField(),
     });
+
+    alert(value.name + '님의 친구신청을 거절했습니다.');
+
+    setRefuseToggle((prev) => !prev);
   };
+
+  useEffect(() => {
+    fetchUser()
+      .then((user) => {
+        setUserDocObj(user);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [refuseToggle, acceptToggle]);
+
   return (
     <CardContainer>
       <RowFlex>
