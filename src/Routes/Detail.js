@@ -9,7 +9,8 @@ import styled, { keyframes } from 'styled-components';
 /*
  * import for firebase
  */
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+
+import { doc, getDoc, setDoc ,deleteDoc, updateDoc} from 'firebase/firestore';
 import { authService, db } from '../fbase';
 
 const CardAppear = keyframes`
@@ -261,6 +262,52 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
     getPartUsers();
   }, [getPartUsers]);
 
+  
+  function filtercurrentParts(userparts){
+    var index = userparts.indexOf(post.postid);
+    console.log(index);
+    if (index > -1) {
+      userparts.splice(index, 1);
+    }
+    return userparts
+  }
+
+  //게시글 삭제
+  const RemovePostClick = async () => {
+    const docRef2 = doc(db, 'posts', post.postid);
+    deleteDoc(docRef2);
+    for (var i=0; i<partUsers.length; i++){
+      console.log( partUsers[i].id);
+      await setDoc(
+        doc(db, 'users', partUsers[i].id),
+        {
+          point: partUsers[i].point + post.totalPrice / post.totalPartNum,
+          currentParts: filtercurrentParts(partUsers[i].currentParts),
+        },
+        { merge: true },
+      );
+    }
+    await setDoc(
+      doc(db, 'users', user.uid),
+      {
+        point: userDocObj.point + post.totalPrice / post.totalPartNum,
+        currentParts: filtercurrentParts(userDocObj.currentParts),
+      },
+      { merge: true },
+    );
+    alert(`게시글이 삭제되었습니다.`);
+    fetchPosts();
+    fetchUser()
+      .then((user) => {
+        setUserDocObj(user);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    navigation('/');
+  }
+  
+
   const handleClick = async () => {
     const findUser = post.currentPartUser.find((item) => {
       return item === user.uid;
@@ -324,7 +371,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
                   <Title>{post.title}</Title>
                   <Price>참여비용 {post.totalPrice / post.totalPartNum}원</Price>
                 </ColumnFlex>
-                {post.uid === user.uid ? <RemovePost>삭제</RemovePost> : ''}
+                {post.uid === user.uid ? <RemovePost className='removePost' onClick={RemovePostClick} >삭제</RemovePost> : ''}
               </RowFlex>
             </BodyContainer>
 
