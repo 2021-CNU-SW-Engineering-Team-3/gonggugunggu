@@ -10,7 +10,7 @@ import { Container, Card } from 'react-bootstrap';
 /*
  * import for firebase
  */
-import { authService, db } from '../fbase';
+import { db } from '../fbase';
 import { doc, deleteDoc, getDoc } from 'firebase/firestore';
 import { deleteUser, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 
@@ -220,12 +220,8 @@ const ResignButton = styled.button`
   }
 `;
 
-const UserDetail = ({ data }) => {
-  const [infoToggle, setInfoToggle] = useState(false);
-  // const [userName, setUserName] = useState(userObj.displayName);
-  // const [avataURL, setAvataURL] = useState(userObj.photoURL);
+const UserDetail = () => {
   const { id } = useParams();
-  const [userId, setUserId] = useState(id);
   const [userPhotoURL, setUserPhotoURL] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
@@ -251,13 +247,8 @@ const UserDetail = ({ data }) => {
 
   const onResignClick = () => {
     if (window.confirm('정말 회원 삭제하시겠습니까?') === true) {
-      const password = window.prompt('비밀번호를 입력해주세요');
-      // const credential = EmailAuthProvider.credential(user.email, password);
-
       const docRef = doc(db, 'users', user.id);
       deleteDoc(docRef);
-
-      deleteUser()
 
       navigate('/userList');
     }
