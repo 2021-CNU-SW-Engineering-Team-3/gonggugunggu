@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Container, Row, Col } from 'react-bootstrap';
 
 import FriendCard from '../Components/FriendCard';
 import ChattingModal from '../Components/ChattingModal';
+import DeleteModal from '../Components/DeleteModal';
+import RequestedFriend from '../Components/RequestedFriend';
 
 const CardAppear = keyframes`
     0% {
@@ -27,6 +29,19 @@ const CardContainer = styled(Container)`
   }
 `;
 
+const ListContainer = styled(Container)`
+  margin-top: 100px;
+  animation: ${CardAppear} 0.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+
+  @media only screen and (max-width: 992px) {
+    margin-top: 60px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    margin-top: 40px;
+  }
+`;
+
 const NoFriends = styled.div``;
 
 const Button = styled.button`
@@ -36,9 +51,9 @@ const Button = styled.button`
   justify-content: center;
   font-size: 18px;
   margin: 8px 0;
-  width: 95%;
+  width: 45%;
   border: 2px solid black;
-  margin: 10px;
+  margin: 5px;
   border-radius: 5px;
 
   &:hover {
@@ -46,16 +61,34 @@ const Button = styled.button`
     color: white;
     transition: all ease-out 0.3s 0s;
   }
+
+  @media only screen and (max-width: 992px) {
+    width: 38%;
+    margin-left: 20px;
+  }
+  @media only screen and (max-width: 768px) {
+    width: 35%;
+    margin: 5px 38px;
+  }
 `;
 
-const FriendsList = ({ userObj, userDocObj }) => {
-  const [userName, setUserName] = useState(userObj.displayName);
+const FriendsList = ({ userObj, userDocObj, fetchUser, setUserDocObj }) => {
   const [friends, setFriends] = useState(userDocObj.friends);
   const [loaded, setLoaded] = useState(false);
   const [chattingToggle, setChattingToggle] = useState(false);
   const [clickedUser, setClickedUser] = useState('');
+  const [deleteToggle, setDeleteToggle] = useState(false);
+  const [requestedFriends, setRequestedFriends] = useState(undefined);
 
-  if (friends === undefined && userDocObj.friends !== undefined) setFriends(userDocObj.friends);
+  if ((friends === undefined && userDocObj.friends !== undefined) || userDocObj.friends !== friends)
+    setFriends(userDocObj.friends);
+
+  if (userDocObj.waitingFriend !== undefined)
+    if (
+      (requestedFriends === undefined && userDocObj.waitingFriend.requested !== undefined) ||
+      userDocObj.waitingFriend.requested !== requestedFriends
+    )
+      setRequestedFriends(userDocObj.waitingFriend.requested);
 
   const handleModalClick = (e, value) => {
     e.preventDefault();
@@ -63,18 +96,57 @@ const FriendsList = ({ userObj, userDocObj }) => {
     setChattingToggle((prev) => !prev);
   };
 
+  const handleDeleteClick = (e, value) => {
+    e.preventDefault();
+    !deleteToggle ? setClickedUser(value) : setClickedUser('');
+    setDeleteToggle((prev) => !prev);
+  };
+
+  useEffect(() => {
+    fetchUser()
+      .then((user) => {
+        setUserDocObj(user);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [deleteToggle]);
+
   return (
     <>
       {!loaded ? setLoaded(true) : <></>}
+      <ListContainer>
+        <Row xs={1} sm={1} md={2} lg={3} className='g-4'>
+          {requestedFriends !== undefined && Object.values(requestedFriends).length !== 0 ? (
+            Object.values(requestedFriends).map((val) => {
+              return (
+                <Col key={val[0].id}>
+                  <RequestedFriend
+                    friend={val}
+                    userDocObj={userDocObj}
+                    fetchUser={fetchUser}
+                    setUserDocObj={setUserDocObj}
+                  />
+                </Col>
+              );
+            })
+          ) : (
+            <NoFriends>받은 친구신청이 없습니다.</NoFriends>
+          )}
+        </Row>
+      </ListContainer>
       <CardContainer>
         <Row xs={1} sm={1} md={2} lg={3} className='g-4'>
           {friends !== undefined && Object.values(friends).length !== 0 ? (
             Object.values(friends).map((val) => {
               return (
-                <Col key={val}>
+                <Col key={val[0].id}>
                   <FriendCard friends={val} />
-                  <Button color={'black'} onClick={(e) => handleModalClick(e, val)}>
+                  <Button color={'black'} onClick={(e) => handleModalClick(e, val[0])}>
                     채팅하기
+                  </Button>
+                  <Button color={'black'} onClick={(e) => handleDeleteClick(e, val[0])}>
+                    삭제하기
                   </Button>
                 </Col>
               );
@@ -85,11 +157,12 @@ const FriendsList = ({ userObj, userDocObj }) => {
         </Row>
       </CardContainer>
       {chattingToggle === true ? (
-        <ChattingModal
-          handleModalClick={handleModalClick}
-          userDocObj={userDocObj}
-          opponentObj={clickedUser}
-        ></ChattingModal>
+        <ChattingModal handleModalClick={handleModalClick} opponentObj={clickedUser}></ChattingModal>
+      ) : (
+        ''
+      )}
+      {deleteToggle === true ? (
+        <DeleteModal handleDeleteClick={handleDeleteClick} opponentObj={clickedUser}></DeleteModal>
       ) : (
         ''
       )}

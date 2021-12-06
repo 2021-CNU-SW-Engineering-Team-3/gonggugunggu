@@ -257,6 +257,7 @@ const Posting = ({ fetchPosts, userDocObj, fetchUser, setUserDocObj }) => {
   const navigation = useNavigate();
   const uploadPhotoRef = useRef();
   const user = authService.currentUser;
+  const [post, setPost] = useState();
 
   const [step, setStep] = useState(1);
   const [title, setTitle] = useState('');
@@ -292,11 +293,12 @@ const Posting = ({ fetchPosts, userDocObj, fetchUser, setUserDocObj }) => {
             liked: 0,
             createdAt: serverTimestamp(),
           });
-
+          console.log(postid);
           await setDoc(
             doc(db, 'users', user.uid),
             {
               point: userDocObj.point - totalPrice / totalPartNum,
+              currentParts: [ ...userDocObj.currentParts, postid],
             },
             { merge: true },
           );

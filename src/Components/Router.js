@@ -18,6 +18,8 @@ import MyPost from '../Routes/MyPost';
 import PartList from '../Routes/PartList';
 import UserList from '../Routes/UserList';
 import UserDetail from '../Routes/UserDetail';
+import PostList from '../Routes/PostList';
+import PostDetail from '../Routes/PostDetail';
 
 /*
  * AppRouter Component
@@ -32,9 +34,21 @@ const AppRouter = ({ isLoggedIn, userObj, userDocObj, fetchPosts, data, fetchUse
           <Route path='/auth' element={<Auth />} />
           <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<Profile userObj={userObj} userDocObj={userDocObj} />} />
-          <Route path='/friendsList' element={<FriendsList userObj={userObj} userDocObj={userDocObj} />} />
+          <Route
+            path='/friendsList'
+            element={
+              <FriendsList
+                userObj={userObj}
+                userDocObj={userDocObj}
+                fetchUser={fetchUser}
+                setUserDocObj={setUserDocObj}
+              />
+            }
+          />
           <Route path='/userList' element={<UserList />} />
           <Route path='/userDetail/:id' element={<UserDetail />} />
+          <Route path='/postList/' element={<PostList />} />
+          <Route path='/postDetail/:id' element={<PostDetail />} />
           <Route
             path='/posting'
             element={

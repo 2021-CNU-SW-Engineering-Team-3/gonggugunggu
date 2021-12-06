@@ -10,7 +10,7 @@ import { Container, Card } from 'react-bootstrap';
 /*
  * import for firebase
  */
-import { authService, db } from '../fbase';
+import { db } from '../fbase';
 import { doc, deleteDoc, getDoc } from 'firebase/firestore';
 import { deleteUser, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 
@@ -262,7 +262,6 @@ const UserDetail = ({ data }) => {
 
   const onResignClick = () => {
     if (window.confirm('정말 회원 삭제하시겠습니까?') === true) {
-
       const docRef = doc(db, 'users', user.id);
       deleteDoc(docRef);
 

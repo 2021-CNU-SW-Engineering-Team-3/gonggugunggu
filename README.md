@@ -33,16 +33,16 @@
 <br/>
 
 - 드롭박스의 게시글 목록 및 공동구매 참여 목록 - 강인한
-1. 자신의 게시글 목록
-2. 공동구매 참여 목록
-3. 자신의 게시글 삭제
+1. ~~자신의 게시글 목록~~
+2. ~~공동구매 참여 목록~~
+3. ~~자신의 게시글 삭제~~
 
 <br/>
 
 - 거래 친구 -- 류건열
 1. ~~채팅~~
 2. ~~거래친구 목록 보기~~
-3. 거래친구 추가, 삭제
+3. ~~거래친구 추가, 삭제~~
 
 <br/>
 
@@ -88,7 +88,9 @@
 
 ## Frontend
 ### Structure
-  > [src/~~~](./src/~~~) : Directory for ~~~   
+  > [src/Components](./src/Components) : Directory for Components <br/>
+  > [src/Images](./src/Images) : Directory for Images <br/>
+  > [src/Routes](./src/Routes) : Directory for Routes <br/>
 
 <div align="right">
     <b><a href="#2021-cnu-sw-engineering">⬆️ Back to Top</a></b>
@@ -102,7 +104,7 @@
 </div>
 
 ## Webpage
-  > 웹페이지 사진
+  > <img width="874" alt="스크린샷 2021-12-06 오전 12 49 25" src="https://user-images.githubusercontent.com/34560965/144753580-be3f1be3-3d08-4a26-8038-761d4ee258fd.png">
 
 
 <div align="right">
@@ -113,10 +115,10 @@
 ## Contributors
 | Name | Country | Where to find us | Role |
 | ---- | ------- | ----------------- | ---- |
-| Inhan Kang <br /> <img src="https://avatars.githubusercontent.com/inhan05053" width="100" />  | Republic of Korea | [Github](https://github.com/inhan05053)| 역할 |
+| Inhan Kang <br /> <img src="https://avatars.githubusercontent.com/inhan05053" width="100" />  | Republic of Korea | [Github](https://github.com/inhan05053)| Frontend |
 | Byeongmin Jeon <br /> <img src="https://avatars.githubusercontent.com/jeonbyeongmin" width="100" />  | Republic of Korea | [Github](https://github.com/jeonbyeongmin)| Frontend |
 | Geonyeol Ryu <br /> <img src="https://avatars.githubusercontent.com/rjsduf0503" width="100" />  | Republic of Korea | [Github](https://github.com/rjsduf0503)| Frontend |
-| Seunghun Han <br /> <img src="https://avatars.githubusercontent.com/gooriiie" width="100" />  | Republic of Korea | [Github](https://github.com/gooriiie)| 역할 |
+| Seunghun Han <br /> <img src="https://avatars.githubusercontent.com/gooriiie" width="100" />  | Republic of Korea | [Github](https://github.com/gooriiie)| Frontend |
 
 <div align="right">
     <b><a href="#2021-cnu-sw-engineering">⬆️ Back to Top</a></b>
@@ -124,10 +126,8 @@
 
 ## Prerequisites
 
--   Windows : ~~~
--   Mac : ~~~
-
--   npm install ~~~~
+> 1. npm install 
+> 2. npm run start
 
 <div align="right">
     <b><a href="#2021-cnu-sw-engineering">⬆️ Back to Top</a></b>

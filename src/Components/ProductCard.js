@@ -89,7 +89,7 @@ const ProductCard = ({ product }) => {
           </ColumnFlex>
 
           <RowFlex>
-            <CardDescription>{product.totalPrice}원</CardDescription>
+            <CardDescription>{product.totalPrice / product.totalPartNum}원</CardDescription>
             <CardDescription style={{ color: 'red' }}>♡ {product.liked}</CardDescription>
           </RowFlex>
         </CardBody>
