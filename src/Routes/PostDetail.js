@@ -9,7 +9,7 @@ import styled, { keyframes } from 'styled-components';
 /*
  * import for firebase
  */
-import { doc, getDoc, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { authService, db } from '../fbase';
 
 import unknown from '../Images/Unknown_person.jpeg';
@@ -127,18 +127,21 @@ const MySpinner = styled(Spinner)`
   top: 48%;
 `;
 
-const PostDetail = () => {
+const PostDetail = ({ fetchPosts, fetchUser }) => {
   let { id } = useParams();
   const navigate = useNavigate();
   const [postUser, setPostUser] = useState();
   const [post, setPost] = useState();
+  const [currentPart, setCurrentPart] = useState([]);
+  const [partUsers, setPartUsers] = useState([]);
 
   useEffect(async () => {
     const docRef = doc(db, 'posts', id);
     const docSnap = await getDoc(docRef);
   
     if(docSnap.exists()) {
-      console.log("documenet data : " , docSnap.data().id);
+      console.log("documenet data : " , docSnap.data().postid);
+      setCurrentPart(docSnap.data().currentPartUser);
       setPost(docSnap.data());
     }
     else{
@@ -153,14 +156,52 @@ const PostDetail = () => {
         setPostUser(docSnap.data());
     }
   }, [post]);
+  
+  useEffect(async () => {
+    console.log(currentPart);
+    let temp = [];
 
-  const onDeleteClick = () => {
+    if(currentPart.length > 0) {
+        for(var i = 0; i < currentPart.length; i++){
+          const docRef = doc(db, 'users', currentPart[i]);
+          const docSnap = await getDoc(docRef);
+          temp.push(docSnap.data());  
+        }
+        setPartUsers(temp);
+    }
+  }, [post]);
+
+  function filtercurrentParts(userparts) {
+    var index = userparts.indexOf(post.postid);
+    if (index > -1) {
+      userparts.splice(index, 1);
+    }
+    console.log(index);
+    return userparts;
+  }
+
+  const onDeleteClick = async () => {
     if (window.confirm('게시글을 삭제하시겠습니까?') === true) {
+      console.log("partUsers : ", partUsers);
+
       const docRef = doc(db, 'posts', post.postid);
       deleteDoc(docRef);
 
+      for (var i = 0; i < partUsers.length; i++) {
+        await setDoc(
+          doc(db, 'users', partUsers[i].id),
+          {
+            point: partUsers[i].point + (post.totalPrice / post.totalPartNum),
+            currentParts: filtercurrentParts(partUsers[i].currentParts),
+          },
+          { merge: true },
+        );
+      }
+      fetchPosts();
+      fetchUser();
       navigate('/postList');
     }
+    
   };
 
   return (

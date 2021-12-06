@@ -47,8 +47,8 @@ const AppRouter = ({ isLoggedIn, userObj, userDocObj, fetchPosts, data, fetchUse
           />
           <Route path='/userList' element={<UserList />} />
           <Route path='/userDetail/:id' element={<UserDetail />} />
-          <Route path='/postList/' element={<PostList />} />
-          <Route path='/postDetail/:id' element={<PostDetail />} />
+          <Route path='/postList/' element={<PostList fetchPosts={fetchPosts} fetchUser={fetchUser}/>} />
+          <Route path='/postDetail/:id' element={<PostDetail fetchPosts={fetchPosts} fetchUser={fetchUser}/>} />
           <Route
             path='/posting'
             element={

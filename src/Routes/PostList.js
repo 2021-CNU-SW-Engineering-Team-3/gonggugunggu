@@ -18,6 +18,7 @@ const Table = styled.table`
   margin: 0 auto;
   text-align: center;
   border-spacing: 0;
+  margin-top: 20px;
 `;
 
 const TableHeader = styled.th`
@@ -26,13 +27,23 @@ const TableHeader = styled.th`
   font-size: 16px;
   padding: 10px 5px;
   font-weight: bold;
+  background-color: #FFFFE0;
 `;
 
-// const TableName = styled.div`
-  
-// `;
+const TableName = styled.div`
+  margin-top: 5px;
+  margin-bottom: 3px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 30px;
+`;
 
-const PostList = () => {
+const TableContainer = styled.div`
+  margin: auto;
+  margin-top: 50px;
+`;
+
+const PostList = ({ fetchPosts, fetchUser }) => {
     const [posts, setPosts] = useState([]);
 
     let postArray = [];
@@ -48,8 +59,8 @@ const PostList = () => {
     }, []);
 
   return (
-    <div className="container max-w-screen-lg mx-auto">
-        <div className="text-xl font-bold mt-5 mb-3 text-center">게시글 목록</div>
+    <TableContainer>
+        <TableName>게시글 목록</TableName>
         <Table>
             <thead>
                 <tr>
@@ -61,7 +72,7 @@ const PostList = () => {
             </thead>
             <Tr posts={posts}></Tr>
         </Table>
-    </div>
+    </TableContainer>
   );
 };
 
