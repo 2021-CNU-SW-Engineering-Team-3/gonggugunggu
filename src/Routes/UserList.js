@@ -14,12 +14,33 @@ import styled from 'styled-components';
 import { db } from '../fbase';
 import { collection, getDocs } from 'firebase/firestore';
 
-const UserListContainer = styled.div`
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  transition: all 0.15s;
-  user-select: none;
+const Table = styled.table`
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
+  border-spacing: 0;
+  margin-top: 20px;
+`;
+
+const TableHeader = styled.th`
+  border-bottom: 1px solid #e8e8e8;
+  padding: 0;
+  font-size: 16px;
+  padding: 10px 5px;
+  font-weight: bold;
+  background-color: #6495ED;
+`;
+
+const TableName = styled.div`
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  
+`;
+
+const TableContainer = styled.div`
   margin-top: 50px;
 `;
 
@@ -43,9 +64,19 @@ const UserList = () => {
   }, [users]);
   
   return (
-    <UserListContainer>
-      <User users={users} />
-    </UserListContainer>
+    <TableContainer>
+      <TableName>유저 목록</TableName>
+      <Table>
+        <thead>
+            <tr>
+                <TableHeader>번호</TableHeader>
+                <TableHeader>이름</TableHeader>
+                <TableHeader>이메일</TableHeader>
+            </tr>
+        </thead>
+        <User users={users} />
+      </Table>
+    </TableContainer>
   );
 };
 
