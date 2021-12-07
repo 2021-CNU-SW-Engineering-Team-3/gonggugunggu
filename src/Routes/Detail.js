@@ -6,12 +6,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Container, Spinner, Card } from 'react-bootstrap';
 import styled, { keyframes } from 'styled-components';
 import { IoPersonAddOutline, IoIosStarOutline } from 'react-icons/all';
+
 /*
  * import for firebase
  */
-
 import { doc, getDoc, setDoc, deleteDoc, updateDoc, arrayUnion, get, child } from 'firebase/firestore';
 import { authService, db } from '../fbase';
+
+import StarRate from '../Components/StarRate';
 
 const CardAppear = keyframes`
     0% {
@@ -225,6 +227,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
   const [post, setPost] = useState();
   const [partUsers, setPartUsers] = useState([]);
   const [isPart, setIsPart] = useState();
+  const [modal, setModal] = useState();
 
   const getPost = useCallback(async () => {
     if (data) {
@@ -452,7 +455,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
               <RowFlex>
                 <ColumnFlex>
                   <Title>{post.title}</Title>
-                  <Price>참여비용 {post.totalPrice / post.totalPartNum}원</Price>
+                  <Price>참여 비용 {post.totalPrice / post.totalPartNum}원</Price>
                 </ColumnFlex>
                 {post.uid === user.uid ? (
                   <RemovePost className='removePost' onClick={RemovePostClick}>
@@ -464,9 +467,15 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
               </RowFlex>
             </BodyContainer>
 
-            <Button className='parti' onClick={handleClick}>
-              공동구매 참여
-            </Button>
+            {isPart ? (
+              // TODO: 구매 확정 onClick 이벤트 넣어야 함
+              <Button className='parti'>구매 확정</Button>
+            ) : (
+              <Button className='parti' onClick={handleClick}>
+                공동구매 참여
+              </Button>
+            )}
+
             <PartNumber>
               현재 참여 인원 {post.currentPartNum} / {post.totalPartNum}
             </PartNumber>
@@ -483,24 +492,29 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
           <DetailContentContainer>
             {partUsers.map((value, index) => {
               return (
-                <UserContainer key={index}>
-                  <UserLeft>
-                    <Avata src={value.photoURL} />
-                    <UserName>{value.name}</UserName>
-                    <Rate>백마지수 {value.totalRate}</Rate>
-                  </UserLeft>
-                  <RowFlex>
-                    <IconContainer style={{ marginRight: 20 }}>
-                      <IoIosStarOutline size={20} />
-                    </IconContainer>
-                    <IconContainer>
-                      <IoPersonAddOutline onClick={(e) => handleAddButton(e, value)} size={20} />
-                    </IconContainer>
-                  </RowFlex>
-                </UserContainer>
+                <>
+                  <UserContainer key={index}>
+                    <UserLeft>
+                      <Avata src={value.photoURL} />
+                      <UserName>{value.name}</UserName>
+                      <Rate>백마지수 {value.totalRate}</Rate>
+                    </UserLeft>
+                    <RowFlex>
+                      {/* //TODO: 평가하기 onClick 이벤트 처리 */}
+                      <IconContainer style={{ marginRight: 20 }}>
+                        <IoIosStarOutline size={20} />
+                      </IconContainer>
+                      <IconContainer>
+                        <IoPersonAddOutline onClick={(e) => handleAddButton(e, value)} size={20} />
+                      </IconContainer>
+                    </RowFlex>
+                  </UserContainer>
+                </>
               );
             })}
           </DetailContentContainer>
+
+          <StarRate />
         </DetailContainer>
       ) : (
         <MySpinner animation='border' role='status'>
