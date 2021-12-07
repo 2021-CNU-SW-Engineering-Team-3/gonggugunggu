@@ -48,7 +48,11 @@ const Logo = styled.div`
   font-size: 70px;
   font-weight: 700;
   color: black;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  border-bottom: 6px solid black;
+  width: 100%;
+  padding: 30px;
+  text-align: center;
 
   @media only screen and (max-width: 800px) {
     font-size: 50px;
@@ -60,9 +64,8 @@ const TextField = styled.input`
   border: 1px solid lightgray;
   border-radius: 5px;
   font-size: 15px;
-  padding: 10px 20px;
+  padding: 20px 24px;
   width: 100%;
-  height: 50px;
 
   &:focus {
     outline: none;
@@ -73,25 +76,31 @@ const TextField = styled.input`
 const Button = styled.button`
   background-color: ${({ color }) => color};
   padding: 12px 50px;
-  color: white;
   justify-content: center;
-  font-size: 18px;
   margin: 8px 0;
   width: 100%;
   height: 50px;
   border: none;
   border-radius: 5px;
 
-  &:hover {
-    opacity: 0.8;
+  &.signin {
+    font-size: 20px;
     color: white;
+  }
+
+  &.signup {
+    font-size: 16;
+    color: black;
+  }
+
+  &:hover {
+    opacity: 0.7;
     transition: all ease-out 0.1s;
   }
 `;
 
 const Error = styled.div`
   color: red;
-  margin: 10px;
 `;
 
 /*
@@ -137,11 +146,11 @@ const Auth = () => {
           onChange={onTextChange}
         />
         <Error>{error}</Error>
-        <Button color={'black'} onClick={onSignClick}>
+        <Button className='signin' color={'black'} onClick={onSignClick}>
           LOGIN
         </Button>
         <Link to={'/register'} style={{ width: '100%' }}>
-          <Button color='black'>회원가입</Button>
+          <Button className='signup'>회원가입</Button>
         </Link>
       </LoginBox>
     </LoginWrap>
