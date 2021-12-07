@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Container, Spinner, Card } from 'react-bootstrap';
 import styled, { keyframes } from 'styled-components';
-
+import { IoPersonAddOutline, IoIosStarOutline } from 'react-icons/all';
 /*
  * import for firebase
  */
@@ -191,6 +191,21 @@ const RemovePost = styled.button`
   &:hover {
     opacity: 0.7;
     transition: all ease-out 0.1s;
+  }
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: black;
+  transition: all ease-out 0.2s;
+  &:hover {
+    background-color: #e8e8e8;
+    transition: all ease-out 0.2s;
   }
 `;
 
@@ -460,7 +475,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
           {isPart ? (
             <DetailTitleContainer style={{ maxWidth: 668 }}>
               <PartTitle className='g-4'>현재 참여 중인 공동구매입니다!</PartTitle>
-              <SubTitle>현재 참여하고 있는 유저들과 거래친구를 맺을 수 있습니다</SubTitle>
+              <SubTitle>참여 중인 유저와 거래친구를 맺거나 평가할 수 있습니다.</SubTitle>
             </DetailTitleContainer>
           ) : (
             ''
@@ -474,7 +489,14 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
                     <UserName>{value.name}</UserName>
                     <Rate>백마지수 {value.totalRate}</Rate>
                   </UserLeft>
-                  <Button onClick={(e) => handleAddButton(e, value)}>친구 추가</Button>
+                  <RowFlex>
+                    <IconContainer style={{ marginRight: 20 }}>
+                      <IoIosStarOutline size={20} />
+                    </IconContainer>
+                    <IconContainer>
+                      <IoPersonAddOutline onClick={(e) => handleAddButton(e, value)} size={20} />
+                    </IconContainer>
+                  </RowFlex>
                 </UserContainer>
               );
             })}
