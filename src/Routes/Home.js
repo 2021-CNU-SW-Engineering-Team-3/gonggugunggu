@@ -2,7 +2,7 @@
  * import for react
  */
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { Container, Row, Col } from 'react-bootstrap';
 
@@ -15,6 +15,11 @@ import { authService } from '../fbase';
  * import for Component
  */
 import ProductCard from '../Components/ProductCard';
+
+/*
+ * import for Image
+ */
+import coffee from '../Images/home.png';
 
 /*
  * Keyframes
@@ -176,6 +181,16 @@ const PostingButton = styled.button`
   }
 `;
 
+const ImageContainer = styled(Container)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Image = styled.img`
+  width: 60%;
+`;
+
 const CardContainer = styled(Container)`
   margin-top: 100px;
   animation: ${CardAppear} 0.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
@@ -207,12 +222,14 @@ const throttle = function (callback, waitTime) {
  * Home Component
  */
 const Home = ({ data }) => {
+  const user = authService.currentUser;
+
   const navigation = useNavigate();
+  const documentRef = useRef(document);
 
   const [show, setShow] = useState(false);
   const [move, setMove] = useState(false);
   const [pageY, setPageY] = useState(0);
-  const documentRef = useRef(document);
 
   // Scroll Event
   const handleScroll = () => {
@@ -255,23 +272,46 @@ const Home = ({ data }) => {
         </FlexBox>
       </Header>
       <TitleContainer>
-        <div>
-          <Title className='g-4'>📌 공동구매</Title>
-          <SubTitle>가장 저렴하게 물건을 구할 수 있는 방법</SubTitle>
-        </div>
-
-        <PostingButton onClick={handlePostingClick}>게시글 작성</PostingButton>
+        {user ? (
+          <>
+            <div>
+              <Title className='g-4'>📌 공동구매</Title>
+              <SubTitle>가장 저렴하게 물건을 구할 수 있는 방법</SubTitle>
+            </div>
+            <PostingButton onClick={handlePostingClick}>게시글 작성</PostingButton>
+          </>
+        ) : (
+          <>
+            <div>
+              <Title className='g-4'>📌 공동구매</Title>
+              <SubTitle>로그인하여 가장 저렴하게 물건을 구해보세요!</SubTitle>
+            </div>
+            <Link to={'/auth'}>
+              <PostingButton>로그인 하기</PostingButton>
+            </Link>
+          </>
+        )}
       </TitleContainer>
+
+      {!user ? (
+        <ImageContainer>
+          <Image src={coffee} />
+        </ImageContainer>
+      ) : (
+        ''
+      )}
+
       <CardContainer>
         <Row xs={1} sm={1} md={2} lg={3} className='g-4'>
-          {data &&
-            data.map((_, index) => {
-              return (
-                <Col key={index}>
-                  <ProductCard product={data[index]} />
-                </Col>
-              );
-            })}
+          {user && data
+            ? data.map((_, index) => {
+                return (
+                  <Col key={index}>
+                    <ProductCard product={data[index]} />
+                  </Col>
+                );
+              })
+            : ''}
         </Row>
       </CardContainer>
     </>
