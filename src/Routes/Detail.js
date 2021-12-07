@@ -5,13 +5,15 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Container, Spinner, Card } from 'react-bootstrap';
 import styled, { keyframes } from 'styled-components';
+import { IoPersonAddOutline, IoIosStarOutline } from 'react-icons/all';
 
 /*
  * import for firebase
  */
-
 import { doc, getDoc, setDoc, deleteDoc, updateDoc, arrayUnion, get, child } from 'firebase/firestore';
 import { authService, db } from '../fbase';
+
+import StarRate from '../Components/StarRate';
 
 const CardAppear = keyframes`
     0% {
@@ -194,6 +196,21 @@ const RemovePost = styled.button`
   }
 `;
 
+const IconContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: black;
+  transition: all ease-out 0.2s;
+  &:hover {
+    background-color: #e8e8e8;
+    transition: all ease-out 0.2s;
+  }
+`;
+
 const MySpinner = styled(Spinner)`
   position: fixed;
   left: 48%;
@@ -210,6 +227,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
   const [post, setPost] = useState();
   const [partUsers, setPartUsers] = useState([]);
   const [isPart, setIsPart] = useState();
+  const [modal, setModal] = useState();
 
   const getPost = useCallback(async () => {
     if (data) {
@@ -437,7 +455,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
               <RowFlex>
                 <ColumnFlex>
                   <Title>{post.title}</Title>
-                  <Price>참여비용 {post.totalPrice / post.totalPartNum}원</Price>
+                  <Price>참여 비용 {post.totalPrice / post.totalPartNum}원</Price>
                 </ColumnFlex>
                 {post.uid === user.uid ? (
                   <RemovePost className='removePost' onClick={RemovePostClick}>
@@ -449,9 +467,15 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
               </RowFlex>
             </BodyContainer>
 
-            <Button className='parti' onClick={handleClick}>
-              공동구매 참여
-            </Button>
+            {isPart ? (
+              // TODO: 구매 확정 onClick 이벤트 넣어야 함
+              <Button className='parti'>구매 확정</Button>
+            ) : (
+              <Button className='parti' onClick={handleClick}>
+                공동구매 참여
+              </Button>
+            )}
+
             <PartNumber>
               현재 참여 인원 {post.currentPartNum} / {post.totalPartNum}
             </PartNumber>
@@ -460,7 +484,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
           {isPart ? (
             <DetailTitleContainer style={{ maxWidth: 668 }}>
               <PartTitle className='g-4'>현재 참여 중인 공동구매입니다!</PartTitle>
-              <SubTitle>현재 참여하고 있는 유저들과 거래친구를 맺을 수 있습니다</SubTitle>
+              <SubTitle>참여 중인 유저와 거래친구를 맺거나 평가할 수 있습니다.</SubTitle>
             </DetailTitleContainer>
           ) : (
             ''
@@ -468,17 +492,29 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
           <DetailContentContainer>
             {partUsers.map((value, index) => {
               return (
-                <UserContainer key={index}>
-                  <UserLeft>
-                    <Avata src={value.photoURL} />
-                    <UserName>{value.name}</UserName>
-                    <Rate>백마지수 {value.totalRate}</Rate>
-                  </UserLeft>
-                  <Button onClick={(e) => handleAddButton(e, value)}>친구 추가</Button>
-                </UserContainer>
+                <>
+                  <UserContainer key={index}>
+                    <UserLeft>
+                      <Avata src={value.photoURL} />
+                      <UserName>{value.name}</UserName>
+                      <Rate>백마지수 {value.totalRate}</Rate>
+                    </UserLeft>
+                    <RowFlex>
+                      {/* //TODO: 평가하기 onClick 이벤트 처리 */}
+                      <IconContainer style={{ marginRight: 20 }}>
+                        <IoIosStarOutline size={20} />
+                      </IconContainer>
+                      <IconContainer>
+                        <IoPersonAddOutline onClick={(e) => handleAddButton(e, value)} size={20} />
+                      </IconContainer>
+                    </RowFlex>
+                  </UserContainer>
+                </>
               );
             })}
           </DetailContentContainer>
+
+          <StarRate />
         </DetailContainer>
       ) : (
         <MySpinner animation='border' role='status'>

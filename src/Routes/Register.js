@@ -53,10 +53,15 @@ const RegisterBox = styled.div`
 `;
 
 const Logo = styled.div`
+  margin-top: 50px;
   font-size: 70px;
   font-weight: 700;
   color: black;
-  margin: 30px;
+  margin-bottom: 20px;
+  border-bottom: 6px solid black;
+  width: 100%;
+  padding: 30px;
+  text-align: center;
 
   @media only screen and (max-width: 800px) {
     font-size: 50px;
@@ -71,8 +76,8 @@ const Avata = styled.img`
   width: 130px;
   height: 130px;
   border-radius: 50%;
-  margin-top: 40px;
-  margin-bottom: 50px;
+  margin-top: 20px;
+  margin-bottom: 30px;
 
   &:hover {
     opacity: 0.6;
@@ -93,9 +98,8 @@ const TextField = styled.input`
   border: 1px solid lightgray;
   border-radius: 5px;
   font-size: 15px;
-  padding: 10px 15px;
+  padding: 20px 24px;
   width: 100%;
-  height: 50px;
 
   &:focus {
     outline: none;
@@ -105,7 +109,6 @@ const TextField = styled.input`
 
 const Error = styled.div`
   color: red;
-  margin: 10px;
 `;
 
 const Button = styled.input`
@@ -120,7 +123,7 @@ const Button = styled.input`
   border: none;
   border-radius: 5px;
   &:hover {
-    opacity: 0.8;
+    opacity: 0.7;
     color: white;
     transition: all ease-out 0.1s;
   }

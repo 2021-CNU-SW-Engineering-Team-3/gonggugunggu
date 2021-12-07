@@ -3,7 +3,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AiOutlineSearch } from 'react-icons/all';
+import { AiOutlineSearch, BsPerson } from 'react-icons/all';
 import styled from 'styled-components';
 import Avata from './AvataDropdown.js';
 
@@ -39,9 +39,9 @@ const Header = styled.header`
     transition: all ease-out 0.2s;
   }
 
-  @media only screen and (max-width: 900px) {
+  /* @media only screen and (max-width: 900px) {
     width: 900px;
-  }
+  } */
 `;
 
 const FlexBox = styled.div`
@@ -103,9 +103,18 @@ const NavLink = styled.div`
   font-size: 16px;
 `;
 
-const Text = styled.div`
+const IconContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: black;
+  transition: all ease-out 0.2s;
   &:hover {
-    opacity: 0.7;
+    background-color: #e8e8e8;
+    transition: all ease-out 0.2s;
   }
 `;
 
@@ -171,9 +180,11 @@ const MyHeader = ({ isLoggedIn, userObj, userDocObj }) => {
               {isLoggedIn ? (
                 <Avata userObj={userObj} userDocObj={userDocObj} />
               ) : (
-                <Text>
-                  <Link to={'/auth'}>로그인하기</Link>
-                </Text>
+                <Link to={'/auth'}>
+                  <IconContainer>
+                    <BsPerson size={25} />
+                  </IconContainer>
+                </Link>
               )}
             </NavLink>
           </NavGroup>
