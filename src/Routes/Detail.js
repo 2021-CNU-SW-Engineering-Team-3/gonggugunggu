@@ -3,9 +3,10 @@
  */
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Container, Spinner, Card } from 'react-bootstrap';
+import { Container, Spinner, Card, Accordion } from 'react-bootstrap';
 import styled, { keyframes } from 'styled-components';
-import { IoPersonAddOutline, IoIosStarOutline } from 'react-icons/all';
+import { IoPersonAddOutline } from 'react-icons/all';
+import { Rating } from 'react-simple-star-rating';
 
 /*
  * import for firebase
@@ -13,7 +14,20 @@ import { IoPersonAddOutline, IoIosStarOutline } from 'react-icons/all';
 import { doc, getDoc, setDoc, deleteDoc, updateDoc, arrayUnion, get, child } from 'firebase/firestore';
 import { authService, db } from '../fbase';
 
-import StarRate from '../Components/StarRate';
+import CustomToggle from '../Components/CustomToggle';
+
+const fillColorArray = [
+  '#f17a45',
+  '#f17a45',
+  '#f19745',
+  '#f19745',
+  '#f1a545',
+  '#f1a545',
+  '#f1b345',
+  '#f1b345',
+  '#f1d045',
+  '#f1d045',
+];
 
 const CardAppear = keyframes`
     0% {
@@ -63,7 +77,19 @@ const UserContainer = styled(Container)`
   justify-content: space-between;
   align-items: center;
   padding: 20px 50px;
+`;
+
+const MyAccodion = styled(Accordion)`
+  width: 100%;
   border-bottom: 1px solid #e8e8e8;
+`;
+
+const AccodionBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 70px;
 `;
 
 const UserLeft = styled.div`
@@ -227,7 +253,36 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
   const [post, setPost] = useState();
   const [partUsers, setPartUsers] = useState([]);
   const [isPart, setIsPart] = useState();
-  const [modal, setModal] = useState();
+  const [rating, setRating] = useState(0);
+
+  const handleRating = async (rate, value) => {
+    setRating(rate);
+
+    const currentUser = await getDoc(doc(db, 'users', user.uid));
+    const currentUserData = currentUser.data();
+
+    if (!currentUserData.evaluateUser.find((userId) => userId === value.id)) {
+      await setDoc(
+        doc(db, 'users', value.id),
+        {
+          totalRate: value.totalRate + rate / 10,
+        },
+        { merge: true },
+      );
+
+      await setDoc(
+        doc(db, 'users', currentUserData.id),
+        {
+          evaluateUser: [...currentUserData.evaluateUser, value.id],
+        },
+        { merge: true },
+      );
+
+      getPartUsers();
+    } else {
+      alert('이미 평가한 유저입니다.');
+    }
+  };
 
   const getPost = useCallback(async () => {
     if (data) {
@@ -366,7 +421,6 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
 
   const handleAddButton = (e, value) => {
     e.preventDefault();
-
     requestFriend(value);
   };
 
@@ -413,6 +467,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
         }
       }
     }
+
     //친구 신청 보내기
     //requested = 신청 받음, wait = 신청 보냄
     await updateDoc(userRef, {
@@ -492,7 +547,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
           <DetailContentContainer>
             {partUsers.map((value, index) => {
               return (
-                <>
+                <MyAccodion defaultActiveKey='0'>
                   <UserContainer key={index}>
                     <UserLeft>
                       <Avata src={value.photoURL} />
@@ -502,19 +557,32 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
                     <RowFlex>
                       {/* //TODO: 평가하기 onClick 이벤트 처리 */}
                       <IconContainer style={{ marginRight: 20 }}>
-                        <IoIosStarOutline size={20} />
+                        <CustomToggle eventKey={index} />
                       </IconContainer>
                       <IconContainer>
                         <IoPersonAddOutline onClick={(e) => handleAddButton(e, value)} size={20} />
                       </IconContainer>
                     </RowFlex>
                   </UserContainer>
-                </>
+
+                  {/* 아코디언 바디 */}
+                  <Accordion.Collapse eventKey={index}>
+                    <AccodionBody>
+                      <Rating
+                        onClick={(rate) => handleRating(rate, value)}
+                        ratingValue={rating}
+                        transition
+                        allowHalfIcon
+                        eventKey={index}
+                        fillColorArray={fillColorArray}
+                        style={{ marginBottom: 20 }}
+                      />
+                    </AccodionBody>
+                  </Accordion.Collapse>
+                </MyAccodion>
               );
             })}
           </DetailContentContainer>
-
-          <StarRate />
         </DetailContainer>
       ) : (
         <MySpinner animation='border' role='status'>
