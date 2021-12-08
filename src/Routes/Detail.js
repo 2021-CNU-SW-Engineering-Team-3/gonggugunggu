@@ -266,6 +266,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
         doc(db, 'users', value.id),
         {
           totalRate: value.totalRate + rate / 10,
+          evaluateCount: value.evaluateCount + 1,
         },
         { merge: true },
       );
@@ -503,7 +504,12 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
                 <Avata src={postUser.photoURL} />
                 <UserName>{postUser.name}</UserName>
               </UserLeft>
-              <Rate>백마지수 {postUser.totalRate}</Rate>
+              <Rate>
+                백마지수{' '}
+                {postUser.evaluateCount > 0
+                  ? Math.round((postUser.totalRate / postUser.evaluateCount) * 10) / 10
+                  : 0}
+              </Rate>
             </UserContainer>
 
             <BodyContainer>
@@ -552,7 +558,12 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
                     <UserLeft>
                       <Avata src={value.photoURL} />
                       <UserName>{value.name}</UserName>
-                      <Rate>백마지수 {value.totalRate}</Rate>
+                      <Rate>
+                        백마지수{' '}
+                        {value.evaluateCount > 0
+                          ? Math.round((value.totalRate / value.evaluateCount) * 10) / 10
+                          : 0}
+                      </Rate>
                     </UserLeft>
                     <RowFlex>
                       {/* //TODO: 평가하기 onClick 이벤트 처리 */}

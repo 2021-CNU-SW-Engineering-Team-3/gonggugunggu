@@ -182,13 +182,14 @@ const Register = () => {
             totalRate: 0,
             evaluateCount: 0,
             numberOfReport: 0,
+            evaluateUser: [],
             currentParts: [],
-            createdAt: serverTimestamp(),
             friends: [],
             waitingFriend: {
               wait: [],
               requested: [],
             },
+            createdAt: serverTimestamp(),
           });
         })
         .then(() => {
