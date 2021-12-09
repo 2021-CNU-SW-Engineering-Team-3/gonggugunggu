@@ -70,8 +70,7 @@
 </div>
 
 ## Webpage
-  > <img width="874" alt="스크린샷 2021-12-06 오전 12 49 25" src="https://user-images.githubusercontent.com/34560965/144753580-be3f1be3-3d08-4a26-8038-761d4ee258fd.png">
-
+![로그인전 헤더](https://user-images.githubusercontent.com/28756358/145322551-6088bf52-177c-4384-8bf5-6056734f699f.png)
 
 <div align="right">
     <b><a href="#2021-cnu-sw-engineering">⬆️ Back to Top</a></b>
