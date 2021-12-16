@@ -298,7 +298,7 @@ const Posting = ({ fetchPosts, userDocObj, fetchUser, setUserDocObj }) => {
           await setDoc(
             doc(db, 'users', user.uid),
             {
-              point: userDocObj.point - totalPrice / totalPartNum,
+              point: userDocObj.point - Number(totalPrice) / Number(totalPartNum) - Number(totalPrice),
               currentParts: [...userDocObj.currentParts, postid],
             },
             { merge: true },

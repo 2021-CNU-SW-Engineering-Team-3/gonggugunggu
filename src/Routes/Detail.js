@@ -377,7 +377,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
       await setDoc(
         doc(db, 'users', partUsers[i].id),
         {
-          point: partUsers[i].point + post.totalPrice / post.totalPartNum,
+          point: Number(partUsers[i].point) + Number(post.totalPrice) / Number(post.totalPartNum),
           currentParts: filtercurrentParts(partUsers[i].currentParts),
         },
         { merge: true },
@@ -386,7 +386,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
     await setDoc(
       doc(db, 'users', user.uid),
       {
-        point: userDocObj.point + post.totalPrice / post.totalPartNum,
+        point: Number(userDocObj.point) + Number(post.totalPrice) / Number(post.totalPartNum) + Number(post.totalPrice),
         currentParts: filtercurrentParts(userDocObj.currentParts),
       },
       { merge: true },
