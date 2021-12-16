@@ -316,11 +316,12 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
 
       if (post.postid) {
         unSubscribe = onSnapshot(doc(db, 'posts/' + post.postid), (doc) => {
-          if (doc.data().currentPartNum !== undefined) {
-            setIsFullParts(parseInt(doc.data().currentPartNum) === parseInt(doc.data().totalPartNum));
-            if (parseInt(doc.data().currentPartNum) === parseInt(doc.data().totalPartNum)) {
-              unSubscribe();
-            }
+          if (doc.data() === undefined) {
+            return;
+          }
+          setIsFullParts(parseInt(doc.data().currentPartNum) === parseInt(doc.data().totalPartNum));
+          if (parseInt(doc.data().currentPartNum) === parseInt(doc.data().totalPartNum)) {
+            unSubscribe();
           }
         });
       }
