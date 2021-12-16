@@ -190,6 +190,7 @@ const Register = () => {
               requested: [],
             },
             createdAt: serverTimestamp(),
+            currentConfirms: [],
           });
         })
         .then(() => {
