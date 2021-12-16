@@ -292,13 +292,14 @@ const Posting = ({ fetchPosts, userDocObj, fetchUser, setUserDocObj }) => {
             totalPrice: totalPrice,
             liked: 0,
             createdAt: serverTimestamp(),
+            currentConfirmNum: 0,
+            currentConfirmUser: [],
           });
-          console.log(postid);
           await setDoc(
             doc(db, 'users', user.uid),
             {
               point: userDocObj.point - totalPrice / totalPartNum,
-              currentParts: [ ...userDocObj.currentParts, postid],
+              currentParts: [...userDocObj.currentParts, postid],
             },
             { merge: true },
           );

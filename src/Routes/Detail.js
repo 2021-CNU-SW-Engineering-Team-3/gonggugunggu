@@ -11,7 +11,17 @@ import { Rating } from 'react-simple-star-rating';
 /*
  * import for firebase
  */
-import { doc, getDoc, setDoc, deleteDoc, updateDoc, arrayUnion, get, child } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  setDoc,
+  deleteDoc,
+  updateDoc,
+  arrayUnion,
+  get,
+  child,
+  onSnapshot,
+} from 'firebase/firestore';
 import { authService, db } from '../fbase';
 
 import CustomToggle from '../Components/CustomToggle';
@@ -254,6 +264,10 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
   const [partUsers, setPartUsers] = useState([]);
   const [isPart, setIsPart] = useState();
   const [rating, setRating] = useState(0);
+  const [isFullParts, setIsFullParts] = useState();
+  const [isFullConfirms, setIsFullConfirms] = useState(false);
+  let unSubscribe;
+  let unSubscribe2;
 
   const handleRating = async (rate, value) => {
     setRating(rate);
@@ -299,6 +313,17 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
       const docRef = doc(db, 'users', post.uid);
       const docSnap = await getDoc(docRef);
       setPostUser(docSnap.data());
+
+      if (post.postid) {
+        unSubscribe = onSnapshot(doc(db, 'posts/' + post.postid), (doc) => {
+          if (doc.data().currentPartNum !== undefined) {
+            setIsFullParts(parseInt(doc.data().currentPartNum) === parseInt(doc.data().totalPartNum));
+            if (parseInt(doc.data().currentPartNum) === parseInt(doc.data().totalPartNum)) {
+              unSubscribe();
+            }
+          }
+        });
+      }
     }
   }, [post]);
 
@@ -383,7 +408,7 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
       return item === user.uid;
     });
 
-    if (post.currentPartNum < post.totalPartNum) {
+    if (!isFullParts) {
       if (!findUser) {
         await setDoc(
           doc(db, 'posts', post.postid),
@@ -419,6 +444,108 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
       alert('모집이 끝났습니다.');
     }
   };
+
+  const handleConfirmButton = async () => {
+    //구매 확정 처리 : db에 필드 추가
+    const findUser = post.currentConfirmUser.find((item) => {
+      return item === user.uid;
+    });
+
+    if (!isFullConfirms) {
+      if (!findUser) {
+        const postRef = doc(db, 'posts', post.postid);
+
+        await setDoc(
+          postRef,
+          {
+            currentConfirmNum: post.currentConfirmNum + 1,
+            currentConfirmUser: [...post.currentConfirmUser, user.uid],
+          },
+          { merge: true },
+        );
+
+        if (post.postid) {
+          unSubscribe2 = onSnapshot(doc(db, 'posts/' + post.postid), (doc) => {
+            setPost(doc.data());
+            setIsFullConfirms(parseInt(doc.data().currentConfirmNum) === parseInt(doc.data().totalPartNum));
+            if (parseInt(doc.data().currentConfirmNum) === parseInt(doc.data().totalPartNum)) {
+              unSubscribe2();
+            }
+          });
+        }
+
+        fetchPosts();
+        fetchUser()
+          .then((user) => {
+            setUserDocObj(user);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+        alert('구매를 확정했습니다.');
+      } else {
+        alert('이미 구매 확정을 했습니다.');
+      }
+    } else {
+      alert('모두 구매 확정 완료');
+    }
+  };
+
+  useEffect(async () => {
+    //다 참여할 시 게시글 삭제 및 유저 db에서도 삭제
+    if (isFullConfirms) {
+      //구매 확정 게시글 db에 추가
+      await setDoc(doc(db, 'confirms', post.postid), {
+        uid: post.uid,
+        postid: post.postid,
+        title: post.title,
+        photoURL: post.photoURL,
+        totalPartNum: post.totalPartNum,
+        currentPartNum: post.currentPartNum,
+        currentPartUser: post.currentPartUser,
+        totalPrice: post.totalPrice,
+        liked: post.liked,
+        createdAt: post.createdAt,
+        currentConfirmNum: post.currentConfirmNum,
+        currentConfirmUser: post.currentConfirmUser,
+      });
+
+      //게시글 삭제
+      const docRef = doc(db, 'posts', post.postid);
+      deleteDoc(docRef);
+
+      const postOwner = await getDoc(doc(db, 'users', post.uid));
+
+      for (var i = 0; i < partUsers.length; i++) {
+        await setDoc(
+          doc(db, 'users', partUsers[i].id),
+          {
+            currentParts: filtercurrentParts(partUsers[i].currentParts),
+          },
+          { merge: true },
+        );
+      }
+      await setDoc(
+        doc(db, 'users', post.uid),
+        {
+          point: parseInt(postOwner.data().point) + parseInt(post.totalPrice),
+          currentParts: filtercurrentParts(postOwner.data().currentParts),
+        },
+        { merge: true },
+      );
+
+      fetchPosts();
+      fetchUser()
+        .then((user) => {
+          setUserDocObj(user);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      navigation('/');
+    }
+  }, [isFullConfirms]);
 
   const handleAddButton = (e, value) => {
     e.preventDefault();
@@ -527,10 +654,11 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
                 )}
               </RowFlex>
             </BodyContainer>
-
-            {isPart ? (
+            {isPart && isFullParts ? (
               // TODO: 구매 확정 onClick 이벤트 넣어야 함
-              <Button className='parti'>구매 확정</Button>
+              <Button className='parti' onClick={handleConfirmButton}>
+                구매 확정
+              </Button>
             ) : (
               <Button className='parti' onClick={handleClick}>
                 공동구매 참여
@@ -553,8 +681,8 @@ const Detail = ({ fetchPosts, fetchUser, data, userDocObj, setUserDocObj }) => {
           <DetailContentContainer>
             {partUsers.map((value, index) => {
               return (
-                <MyAccodion defaultActiveKey='0'>
-                  <UserContainer key={index}>
+                <MyAccodion defaultActiveKey='0' key={index}>
+                  <UserContainer>
                     <UserLeft>
                       <Avata src={value.photoURL} />
                       <UserName>{value.name}</UserName>
